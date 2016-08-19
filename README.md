@@ -6,7 +6,7 @@ It implements both the spatial pooler and the temporal memory modules.
 
 For the encoders and the spatial pooler, I used the pseudocode and description BAMI, http://numenta.com/biological-and-machine-intelligence/
 
-For the temporal memory, I used the description in the paper, "Why Neurons Have Thousands of Synapses, a Theory of Sequence Memory in Neocortex," http://journal.frontiersin.org/article/10.3389/fncir.2016.00023/full to guide the implementation. The paper describes the guts of the algorithm, but there are several details that need to be nailed down in an implementation, which are not in the paper. For those, I used some ideas specified in http://chetansurpur.com/slides/2014/5/4/cla-in-nupic.html#42 Note the implementation is NOT faithful to the NUPIC implementation. I did not implementat the PAM mode or the backtrack mode.
+For the temporal memory, I used the description in the paper, "Why Neurons Have Thousands of Synapses, a Theory of Sequence Memory in Neocortex," http://journal.frontiersin.org/article/10.3389/fncir.2016.00023/full to guide the implementation. The paper describes the guts of the algorithm, but there are several details that need to be nailed down in an implementation, which are not in the paper. For those, I used some ideas specified in http://chetansurpur.com/slides/2014/5/4/cla-in-nupic.html#42 Note the implementation is NOT faithful to the NUPIC implementation. I did not implement the PAM mode or the backtrack mode.
 
 For the anomaly detection and scoring parts, I relied on descriptions in the paper "Real-Time Anomaly Detection for Streaming Analytics," https://arxiv.org/abs/1607.02480 I was not able to fully replicate the NUMENTA likelihood algorithm, but was close enough.
 
