@@ -3,7 +3,14 @@ function compute_predictive_states ()
 % SM.CellPredicted. In the process of computing this, it stores the count of active synapses for the dendrites 
 % feeding from the currently  active cells. It keeps two kinds of counts — count of active synapses in 
 % SM.DendriteActive and count of positive synapses in SM.DendritePositive 
-
+%
+% Copyright (c) 2016,  Sudeep Sarkar, University of South Florida, Tampa, USA
+% This work is licensed under the Attribution-NonCommercial-ShareAlike 4.0 International License. 
+% To view a copy of this license, visit https://creativecommons.org/licenses/by-nc-sa/4.0/
+% This program is distributed in the hope that it will be useful,
+% but WITHOUT ANY WARRANTY; without even the implied warranty of
+% MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+%
 global  SM;
 
 %% Initialize the active and Positive synapse and dendrite to NULL sets

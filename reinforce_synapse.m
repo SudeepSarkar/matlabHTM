@@ -8,7 +8,14 @@ function y = reinforce_synapse (sdr)
 % Note that only the active segments (could be more than one) of a correctly predicted cell and 
 % one segment in a bursting column are reinforced. Permanences of active segments of a wrongly 
 % predicted cell are decreased.
-
+%
+% Copyright (c) 2016,  Sudeep Sarkar, University of South Florida, Tampa, USA
+% This work is licensed under the Attribution-NonCommercial-ShareAlike 4.0 International License. 
+% To view a copy of this license, visit https://creativecommons.org/licenses/by-nc-sa/4.0/
+% This program is distributed in the hope that it will be useful,
+% but WITHOUT ANY WARRANTY; without even the implied warranty of
+% MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+%
 global SM;
 
  

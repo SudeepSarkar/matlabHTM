@@ -1,6 +1,13 @@
 function data = encoderNAB (filename, width)
 % used to encode the data in the csv file.
-
+%
+% Copyright (c) 2016,  Sudeep Sarkar, University of South Florida, Tampa, USA
+% This work is licensed under the Attribution-NonCommercial-ShareAlike 4.0 International License. 
+% To view a copy of this license, visit https://creativecommons.org/licenses/by-nc-sa/4.0/
+% This program is distributed in the hope that it will be useful,
+% but WITHOUT ANY WARRANTY; without even the implied warranty of
+% MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+%
 fieldNames = {'energy', 'month', 'day_of_week','time_of_day', 'weeeknd'};
 %data.fields = [1, 4, 5];
 %data.fields = [1];

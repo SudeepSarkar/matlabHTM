@@ -9,7 +9,14 @@ function y = main  (inFile, outFile, displayFlag)
 %
 % Parameters follow the ones specified at
 %https://github.com/numenta/nupic/blob/master/src/nupic/frameworks/opf/common_models/anomaly_params_random_encoder/best_single_metric_anomaly_params_tm_cpp.json
-
+%
+% Copyright (c) 2016,  Sudeep Sarkar, University of South Florida, Tampa, USA
+% This work is licensed under the Attribution-NonCommercial-ShareAlike 4.0 International License. 
+% To view a copy of this license, visit https://creativecommons.org/licenses/by-nc-sa/4.0/
+% This program is distributed in the hope that it will be useful,
+% but WITHOUT ANY WARRANTY; without even the implied warranty of
+% MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+%
 
 global  SM SP anomalyScores iteration predictions
 

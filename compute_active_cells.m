@@ -8,7 +8,14 @@ function anomalyScore = compute_active_cells (sdr)
 % https://github.com/numenta/nupic/wiki/Anomaly-Detection-and-Anomaly-Scores
 % using actual predictions rather than "confidences" as stated on the
 % website. (NOTE: I am not sure what column "confidences" mean -- FUTURE MODIFICATION)
-
+%
+% Copyright (c) 2016,  Sudeep Sarkar, University of South Florida, Tampa, USA
+% This work is licensed under the Attribution-NonCommercial-ShareAlike 4.0 International License. 
+% To view a copy of this license, visit https://creativecommons.org/licenses/by-nc-sa/4.0/
+% This program is distributed in the hope that it will be useful,
+% but WITHOUT ANY WARRANTY; without even the implied warranty of
+% MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+%
 %% The following has NOT been implemented
 % http://chetansurpur.com/slides/2014/5/4/cla-in-nupic.html#42
 % At the beginning of a sequence we stay in "Pay Attention Mode" for a number of timesteps (relevant parameter: pamLength)
