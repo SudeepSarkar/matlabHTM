@@ -31,13 +31,11 @@ for (k=trN+1:N)
 end;
 sigma = sqrt(sigma./[1:trN,1:N-trN]');
 %% Ignore scores upto this point
-
-if labelStart
-    trN = min(labelStart, min (600, round(0.15*N)));
-else
-    trN = min (600, round(0.15*N));
-end
-
+% parameters specified in https://drive.google.com/file/d/0B1_XUjaAXeV3dW1kX1B3VkYwOFE/view
+trN = min (750, round(0.15*N));
+if (labelStart < trN) 
+    fprintf(1, '\n Label in probabationary period');
+end;
 
 %% Short term filter (smooth) the raw scores
 % chossing median over mean did not result in better performance

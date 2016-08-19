@@ -6,6 +6,28 @@ if displayFlag,
     figure; h1 = gcf; 
 end;
 
+
+%%Standard application profile: This application profile attributes equal weight across
+% the scoring metrics. In the NAB profiles.json file this profile is named ?standard?.
+% The scoring weights in this profile are set as follows:
+% TP = 1
+% FP = 1
+% FN = .11
+% Alternate application profile #1: This application rewards a detector that has a very
+% low FP rate; they would rather trade off missing a few true anomalies rather than
+% getting multiple false positives. In the NAB profiles.json file this profile is named
+% ?reward low fp rate?. The scoring weights in this profile are set as follows:
+% TP = 1 [give full credit for properly detected anomalies]
+% FP = 0.22 [decrement the score more for any false positives]
+% FN = .5 [decrement the score less for any missed anomalies]
+% Alternate application profile #2: This application rewards a detector that doesn?t
+% miss any true anomalies; they would rather trade off a few false positives than
+% miss any true anomalies. In the NAB profiles.json file this profile is named
+% ?reward low fn rate?. The scoring weights in this profile are set as follows:
+% TP = 1 [give full credit for properly detected anomalies]
+% FP = .055 [decrement the score less for any false positives]
+% FN = 2 [decrement the score more for any missed anomalies]
+
 A_tp = 1;
 A_fp = -0.1100; %(low_FP low_FN standard) = -0.22 -0.11 -0.11
 A_fn = -1; %-1; %(low_FP low_FN standard) = -1 -2 -1
