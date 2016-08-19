@@ -1,0 +1,70 @@
+function data = encoderNAB (filename, width)
+% used to encode the data in the csv file.
+
+fieldNames = {'energy', 'month', 'day_of_week','time_of_day', 'weeeknd'};
+%data.fields = [1, 4, 5];
+%data.fields = [1];
+data.fields = [1, 4];
+
+data.buckets = [120, 12, 7, 24, 2];
+data.width = [width, width, width, width, width];
+
+data.circularP = [false, true, true, true, true];
+data.shift = [1 1 1 1 width];
+
+%% Read data
+readData = importdata (filename);
+data.N = size(readData.data, 1);
+dateTime = readData.textdata (2:data.N+1, 1);
+
+rawData = datevec(dateTime); %[y, month, d, timeOfDay, m, s]e
+rawData(:,3) = weekday(dateTime);
+rawData(:,5) = ((rawData(:,3) == 1) + (rawData(:,3) == 7)) + 1.0; %weekend 
+% energy, month, day of the week, time of day, weekend, seconds (not used)
+rawData (:, 4) = rawData (:, 4); 
+rawData (:, 1) = readData.data (:,1);
+data.labels = readData.data(:,4);
+data.numentaAnomalyScore = readData.data(:,2);
+data.numentaRawAnomalyScore = readData.data(:,3);
+data.N = length(readData.data);
+
+    
+%% Decide on bits of representation 
+
+data.nBits = data.shift.*data.buckets;
+data.nBits (5) = 2* data.width(5); % month is a two level category data
+
+data.nBits(1) = data.shift(1)*data.buckets(1) + data.width(1) - 1;
+
+%% assign selected data as specified in the variable data.fields to the output
+
+fprintf(1, '\n Bits of rep:');
+for  i=1:length(data.fields);
+    j = data.fields(i);
+    data.name{j} = fieldNames(j);
+    
+    dataRange = (max(rawData(:, j)) - min (rawData(:, j)));
+    if (dataRange)
+        data.value{j} = floor((data.buckets(j) - 1)* (rawData(:, j) - min (rawData(:, j)))./...
+        dataRange +1);
+    else
+        data.value{j} = ones(size(rawData(:, j)));
+    end;
+
+    data.code{j} = encoderScalar (data.nBits(j), data.buckets(j), data.width(j), data.shift (j));
+    fprintf(1, '%d ', data.nBits(j));
+end;
+
+
+
+function [SDR] = encoderScalar (n, buckets, width, shift)
+% used for 
+
+SDR = [];
+sdr = [ones(1, width) zeros(1, n - width)]';
+for i = 1:buckets
+    SDR = [SDR sdr];
+    sdr = circshift(sdr, [shift 0]);
+end;
+
+SDR = SDR';
