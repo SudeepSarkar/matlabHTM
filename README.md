@@ -14,8 +14,11 @@ I also implemnted a bootstraped estimate of the variance of the final scores, so
 
 Performance achieved with this code.
 
-Our Raw Scores + Our implmentation of Anomaly Likelihood: 57.547 (Bootstrap estimate: 56.790 +- 3.935) 
-NumentaTM + NAB Anomaly Likelihood Scores: 60.979 (Bootstrap estimate: 60.864 +- 3.844) 
-NumentaTM Raw Scores + Our implementation of Anomaly Likelihood: 51.671 (Bootstrap estimate: 51.289 +- 4.564) 
+Our Raw Scores + Our implmentation of Anomaly Likelihood: 57.785 (Bootstrap estimate: 58.530 +- 4.095) 
+
+NumentaTM + NAB Anomaly Likelihood Scores: 60.979 (Bootstrap estimate: 61.021 +- 3.815) 
+
+NumentaTM Raw Scores + Our implementation of Anomaly Likelihood: 51.671 (Bootstrap estimate: 51.773 +- 5.002) 
+
 Random: 5.855 (average over > 100 runs)
 
