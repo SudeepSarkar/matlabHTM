@@ -1,4 +1,6 @@
 # matlabHTM
+-- Summer 2016 project by Sudeep Sarkar http://www.cse.usf.edu/~sarkar/
+
 This is an implementation of Numenta's Hierachical Temporal Machines (HTM) and its testing on the Numenta Anomaly Dataset (NAB)
 It implements both the spatial pooler and the temporal memory modules. 
 
@@ -16,3 +18,4 @@ Our Raw Scores + Our implmentation of Anomaly Likelihood: 57.547 (Bootstrap esti
 NumentaTM + NAB Anomaly Likelihood Scores: 60.979 (Bootstrap estimate: 60.864 +- 3.844) 
 NumentaTM Raw Scores + Our implementation of Anomaly Likelihood: 51.671 (Bootstrap estimate: 51.289 +- 4.564) 
 Random: 5.855 (average over > 100 runs)
+
