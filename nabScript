@@ -8,4 +8,6 @@ nice -n 10 matlab -nodisplay -nosplash -nodesktop -r "run('runNAB(31,40,false,tr
 nice -n 10 matlab -nodisplay -nosplash -nodesktop -r "run('runNAB(41,45,false,true)')"  &
 nice -n 10 matlab -nodisplay -nosplash -nodesktop -r "run('runNAB(46,50,false,true)')" &
 nice -n 10 matlab -nodisplay -nosplash -nodesktop -r "run('runNAB(51,54,false,true)')" &
-nice -n 10 matlab -nodisplay -nosplash -nodesktop -r "run('runNAB(55,58,false,true)')" &
+nice -n 10 matlab -nodisplay -nosplash -nodesktop -r "run('runNAB(55,56,false,true)')" &
+nice -n 10 matlab -nodisplay -nosplash -nodesktop -r "run('runNAB(57,57,false,true)')" &
+nice -n 10 matlab -nodisplay -nosplash -nodesktop -r "run('runNAB(58,58,false,true)')" &

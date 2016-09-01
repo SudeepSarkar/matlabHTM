@@ -18,9 +18,9 @@ global  SM;
 % Note --- the underlying synapse/dendrite/cell pointer-based data structure is oriented in the following way
 % Cell body affecting (input) <-- synapse --> dendrites�--> cell body affected (output)
 
-SM.SynapseActive (:) = 0; % synapses that have permanences above a threshold
+%SM.SynapseActive = []; %(:) = 0; % synapses that have permanences above a threshold
 SM.DendriteActive (:) = 0;
-SM.SynapsePositive (:) = 0; % synapses that have positive permanences 
+%SM.SynapsePositive = []; %(:) = 0; % synapses that have positive permanences 
 SM.DendritePositive (:) = 0;
 
 
@@ -32,14 +32,19 @@ SM.DendritePositive (:) = 0;
 [synapse, ~, cellID] = find(SM.SynapseToCell);
 
 % x is a vector of (linear) indices of active cells - note cellID contains the indices of the cells corresponding to 
-% each of the synapses -� so a particular cell index will appear multiple times. Thus, size of x is NOT the equal to % the number of active cells, but is equal to the number of synapses on active cells.
+% each of the synapses -- so a particular cell index will appear multiple times. 
+% Thus, size of x is NOT the equal to the number of active cells, 
+% but is equal to the number of synapses connected to active cells.
 
 x = SM.CellActive(cellID) > 0;
-    
+synapseInput = synapse(x);
 % synapse(x) is a list of synapses connected to active cells
-SM.SynapsePositive(synapse(x)) = 1; % potentially active synapses
-SM.SynapseActive = SM.SynapsePositive .* (SM.SynapsePermanence > SM.P_thresh);   
-SM.SynapsePositive = SM.SynapsePositive .* (SM.SynapsePermanence > 0);
+
+
+SM.synapseActive = find(SM.SynapsePermanence > SM.P_thresh);
+SM.synapseActive = intersect(synapseInput, SM.synapseActive);
+SM.synapsePositive = find(SM.SynapsePermanence > 0);
+SM.synapsePositive = intersect(synapseInput, SM.synapsePositive);
 
 %% Mark the active dendrites -- those with more that Theta number of active synapses
 
@@ -48,21 +53,20 @@ SM.SynapsePositive = SM.SynapsePositive .* (SM.SynapsePermanence > 0);
 % SynapseToDendrite is an array that stores the dendrite id for each synapse
 % histogram of the array SynapseToDendrite (x) would do the job too.
 %
-[x, ~, ~] = find(SM.SynapseActive); % active synapses
-for (j=1:length(x))
-    d = SM.SynapseToDendrite(x(j)); 
-    SM.DendriteActive (d) = SM.DendriteActive (d) + 1;
-end;
+
+d = SM.SynapseToDendrite(SM.synapseActive);
+[y, i] = hist (d, unique(d));
+SM.DendriteActive (i) = y;
+
+
 SM.DendriteActive = double(SM.DendriteActive > SM.Theta);
+
 
 %% Mark the potentially active dendrites with their total
 
-[x, ~, ~] = find(SM.SynapsePositive); % potentially active synapses
-for (j=1:length(x))
-    d = SM.SynapseToDendrite(x(j));
-    SM.DendritePositive (d) = SM.DendritePositive (d) + 1;
-end;
-
+d = SM.SynapseToDendrite(SM.synapsePositive);
+[y, i] = hist (d, unique(d));
+SM.DendritePositive (i) = y;
 
 %% Mark the predicted cells as those with at least one active dendrite
 % DendriteToCell vector stores the index of the cell body it is connected to (affecting)

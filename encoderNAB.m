@@ -8,7 +8,7 @@ function data = encoderNAB (filename, width)
 % but WITHOUT ANY WARRANTY; without even the implied warranty of
 % MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 %
-fieldNames = {'energy', 'month', 'day_of_week','time_of_day', 'weeeknd'};
+fieldNames = {'data_value', 'month', 'day_of_week','time_of_day', 'weeeknd'};
 %data.fields = [1, 4, 5];
 %data.fields = [1];
 data.fields = [1, 4];
@@ -17,7 +17,7 @@ data.buckets = [120, 12, 7, 24, 2];
 data.width = [width, width, width, width, width];
 
 data.circularP = [false, true, true, true, true];
-data.shift = [1 1 1 1 width];
+data.shift = [5 1 1 1 width];
 
 %% Read data
 readData = importdata (filename);
@@ -50,6 +50,7 @@ for  i=1:length(data.fields);
     j = data.fields(i);
     data.name{j} = fieldNames(j);
     
+    %quantize data
     dataRange = (max(rawData(:, j)) - min (rawData(:, j)));
     if (dataRange)
         data.value{j} = floor((data.buckets(j) - 1)* (rawData(:, j) - min (rawData(:, j)))./...
@@ -61,7 +62,6 @@ for  i=1:length(data.fields);
     data.code{j} = encoderScalar (data.nBits(j), data.buckets(j), data.width(j), data.shift (j));
     fprintf(1, '%d ', data.nBits(j));
 end;
-
 
 
 function [SDR] = encoderScalar (n, buckets, width, shift)

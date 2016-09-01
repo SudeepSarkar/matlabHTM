@@ -30,10 +30,6 @@ function anomalyScore = compute_active_cells (sdr)
 
 global SM
 
-%% Find the index of the active input columns
-
-[columnInput] = find(sdr);
-
 
 %% Find index (row and col) of the predicted cells, i.e. cells in polarized state as stored in the
 % 2D sparse array SM.CellPredicted. Note the lengths of the rowPredicted and colPredicted
@@ -51,7 +47,6 @@ global SM
 
 SM.CellActive (:) = 0;
 SM.learnFlag (:) = 0;
-anomalyScore = 1;
 
 %% Set correctly predicted cells to active state
 
@@ -76,19 +71,16 @@ correctColumns = columnPredicted(selectColumns);
 
 linearIndex = sub2ind(size(SM.CellActive), correctRows, correctColumns);
 SM.CellActive (linearIndex) = 1;
-SM.CellActiveLearn (linearIndex) = 1;
 SM.learnFlag (linearIndex) = 1;
 
 %% Update temporal pooled vector - set the index of the correctly predicted columns to 1
 
 uniqueCorrectColumns = unique(correctColumns);
-%tpArray (tpIndex, uniqueCorrectColumns) = 1;
 
 %% Compute anomaly score — differences of the ones in the input and the correctly predicted ones
 %% THIS CAN BE EXPERIMENTED WITH AND UPDATED
 
-anomalyScore = (length(columnInput) - length (uniqueCorrectColumns))/length(columnInput);
-
+anomalyScore = 1 - length (uniqueCorrectColumns)/length(columnInput);
 
 % The following uses the tip at http://floybix.github.io/2016/07/01/attempting-nab
 % Instead of the raw bursting rate, a delta anomaly score was calculated:
@@ -98,7 +90,7 @@ anomalyScore = (length(columnInput) - length (uniqueCorrectColumns))/length(colu
 % of active columns (20% of 40 = 8).
 % (number-of-newly-active-columns-that-are-bursting) /
 % max(0.2 * number-of-active-columns, number-of-newly-active-columns)
-
+% 
 % newlyActiveColumns = setdiff (find(SM.InputPrevious), columnInput);
 % 
 % newlyActiveColumnsCorrect = intersect(uniqueCorrectColumns, newlyActiveColumns);

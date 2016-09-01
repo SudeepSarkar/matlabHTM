@@ -43,10 +43,10 @@ line ([xDendrite'; xCell'], [yDendrite'; yCell'], 'Marker','.','LineStyle','-', 
 
 [synapse2, ~, cellID] = find(SM.SynapseToCell); 
 [xCell, yCell] = ind2sub([SM.M, SM.N], cellID);
-yCell = yCell(logical(SM.SynapseActive))/SM.N; xCell = xCell(logical(SM.SynapseActive))/SM.M; 
+yCell = yCell(SM.synapseActive)/SM.N; xCell = xCell(SM.synapseActive)/SM.M; 
 
 [synapse1, ~, dendrite] = find(SM.SynapseToDendrite); 
-yDendrite = dendrite(logical(SM.SynapseActive))./SM.totalDendrites;
+yDendrite = dendrite(SM.synapseActive)./SM.totalDendrites;
 xDendrite = 1.5 *ones(size(yDendrite));
 
 line ([xDendrite'; xCell'], [yDendrite'; yCell'], 'Marker','.','LineStyle','-', 'color', 'g');

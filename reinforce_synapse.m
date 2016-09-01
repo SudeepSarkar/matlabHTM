@@ -1,9 +1,17 @@
-function y = reinforce_synapse (sdr)
+function y = reinforce_synapse ()
 %
 % This function performs Hebbian learning on the HTM array. At the core, the operation 
 % is quite simple increase the permanences of the synapses contributing to a 
 % correctly  predicted cell and decease the permanences of the synapses feeding into 
 % incorrectly predicted cells.
+%  
+% There are Four possible cases
+% Type 1  - Active segments (could be more than one) of a correctly predicted cell
+%     are reinforced.
+% Type 2  - One segment in a bursting column are reinforced. 
+% Type 3  - Permanences of active segments of a wrongly predicted cell are decreased. 
+% Type 4  - Permanences of non-active segments of a correctly predicted cell are
+%      decreased. as well
 % 
 % Note that only the active segments (could be more than one) of a correctly predicted cell and 
 % one segment in a bursting column are reinforced. Permanences of active segments of a wrongly 
@@ -16,27 +24,31 @@ function y = reinforce_synapse (sdr)
 % but WITHOUT ANY WARRANTY; without even the implied warranty of
 % MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 %
+
+
+
+displayFlag = false;
+
 global SM;
 
+% dendrite  - cellID pair
+[dendrite, ~, cellID] = find(SM.DendriteToCell); % note same cellID might be repeated
+% create a list of synapse-dendrite pairs
+[synapse, ~, dendriteID] = find(SM.SynapseToDendrite);
+% create a list of synapse-preCell pairs
+[synapse, ~, preCell] = find(SM.SynapseToCell);
  
 %% Step 1: Find active dendrites connected to active cells to reinforce
 % Note SM.DendriteActive already has dendrites with at least Theta number of synapses 
 % marked with 1. This was done in compute_predicted_states. Dendrites could be active for 
 % cells that are (i) active (tagged as SM.learnFlag == 1 in compute_active_cells), and (ii) 
 % predicted cells, not active (tagged as SM.learnFlag == 3 in compute_active_cells). 
-% Dendrites connected to category cells from (i) will be tagged with with the number
-% 2 in the DendriteActive array after the following operations.
+%
 
-% dendrite  - cellID pair
-%
-[dendrite, ~, cellID] = find(SM.DendriteToCell); % note same cellID might be repeated
-%[d, ~, ~] = find(SM.learnFlag(cellID) == 1); 
-d = SM.learnFlag(cellID) == 1; 
-%
-% d marks the active cells -- index corresponds to the (dendrite, CellID) pairs
-% dendrite(d) are the dendrites connected to active cells.
-%
-SM.DendriteActive(dendrite(d)) = SM.DendriteActive(dendrite(d)) + 1;
+reinforceDendrites = (SM.learnFlag(cellID) == 1); 
+% logical array aligned wth dendrites -- true if corresponding dendrite is connected to
+% active cells
+
 
 
 %% Step 2: Select dendrites from one cell in a bursting column to reinforce.
@@ -53,9 +65,11 @@ for (k=1:n) % iterate though bursting columns
     burstingDendrites = find(burstingDendrites);
     if (burstingDendrites)
         [~, id] = max(SM.DendritePositive(burstingDendrites));
-        SM.DendriteActive (burstingDendrites(id)) = 2;
-        %fprintf (1, '\n Reinforce dendrite %d in column %d', ...
-        %    burstingDendrites(id), j);
+        
+        if (reinforceDendrites (burstingDendrites(id)))
+            fprintf (1, '\n \t Error = Reinforce dendrite %d in column %d',  burstingDendrites(id), j);
+        end;
+        reinforceDendrites (burstingDendrites(id)) = true;
     end
     
 end;
@@ -66,42 +80,36 @@ end;
 % predicted cell. And then update their permanence -- boost the permanence
 % of the ones that were predicted correctly from the previous cycle (tagged with
 % SM.DendriteActive = 2) and weaken the permanence of the predicted cells from pervious cycle % that are not active (tagged with SM.DendriteActive = 1). The boost is proportional to the 
-% total "positive" sum of the dendrite synapses. This value is "passed down” to the synapse 
+% total "positive" sum of the dendrite synapses. This value is "passed down" to the synapse 
 % level in the following steps here. In the last statement the synapse permanences
 % are updated based this dendrite level value (posSum).
 
-% create a list of synapse-dendrite pairs
-[synapse, ~, dendriteID] = find(SM.SynapseToDendrite);
+reinforceSynapses = ismember(dendriteID, dendrite(reinforceDendrites)); % logical array aligned with the synapses
 
-% d is a list of active dendrites -- dendrites with more than Theta number of active synapses
-% that did not make correct prediction -- we have to demphasize these dendrites
-%
-%[d, ~, ~] = find(SM.DendriteActive(dendrite) == 1);
-d = SM.DendriteActive(dendrite) == 1;
-SM.DendritePositive(d) = 0;  
+preSynapticActiveCells = SM.CellActivePrevious (preCell); % logical array aligned with synapses
 
+strengthenSynapses = synapse(reinforceSynapses & preSynapticActiveCells & (SM.SynapsePermanence(synapse) < 1));
 
-%[x, ~, ~] = find(SM.DendriteActive(dendriteID) ~= 0);
-x = SM.DendriteActive(dendriteID) ~= 0;
-s = synapse(x); d = dendriteID(x);
+weakenSynapses = synapse(reinforceSynapses & ~preSynapticActiveCells & (SM.SynapsePermanence(synapse) > 0));
 
-selectPositive = (SM.SynapsePermanence(s) > 0); 
-s = s (selectPositive); d = d (selectPositive);
+SM.SynapsePermanence(strengthenSynapses) = SM.SynapsePermanence(strengthenSynapses) + SM.P_incr;
+%    + (SM.P_incr * SM.DendritePositive( dendriteID(strengthenSynapses) ));
+
+SM.SynapsePermanence(weakenSynapses) = SM.SynapsePermanence(weakenSynapses) - SM.P_decr;
+%     - (SM.P_decr * SM.DendritePositive( dendriteID(weakenSynapses) ));
 
 
-SM.SynapsePermanence(s) = SM.SynapsePermanence(s) ...
-    + (SM.P_incr * SM.DendritePositive(d) - SM.P_decr);
 
-%% Step 4: Demphasize synapses that predicted cells that are not in active input columns
+%% Step 5: Demphasize synapses that predicted cells that are not in active input columns
 
-%[d, ~, ~] = find(SM.learnFlag(cellID) == 3); % wrongly predicted cells
-d = SM.learnFlag(cellID) == 3;
-x = ismember(dendriteID, dendrite(d));
+d = (SM.learnFlag(cellID) == 3); %logical array array aligned with the dendrites
+x = ismember(dendriteID, dendrite(d)); % logical array aligned with the synapses
 s = synapse(x);
 s = s (SM.SynapsePermanence(s) > 0);
 
-SM.SynapsePermanence(s) = SM.SynapsePermanence(s)  - SM.P_decr_pred;
 
+SM.SynapsePermanence(s) = SM.SynapsePermanence(s) - SM.P_decr_pred;
+%    - SM.P_decr_pred* SM.DendritePositive( dendriteID(s) );
 
       
   

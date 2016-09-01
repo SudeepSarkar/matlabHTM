@@ -63,7 +63,7 @@ for i=startFile:endFile
     
     %% Create Model
     if createModelFlag
-        main  (fileNames{i}, name, displayFlag);
+        main  (fileNames{i}, name, displayFlag, true, 'none');
     end;
     
     %% Read saved run data --
@@ -113,7 +113,7 @@ for i=startFile:endFile
         subplot(6,1,2); plot(anomalyScores); title ('raw Anomaly Score');axis('tight');
         subplot(6,1,3); plot(data.numentaAnomalyScore, 'b'); title ('Numenta');axis('tight');
         subplot(6,1,3); hold on; plot(anomalyLikelihoodNumenta,'r'); title ('Numenta'); hold off; axis('tight');
-        subplot(6,1,6); hold on; plot(data.labels,'g');  hold off; axis('tight');
+        subplot(6,1,6); hold on; plot(data.labels,'r');  hold off; axis('tight');
         %subplot(6,1,6); hold on; plot(detections,'b'); title ('Detections'); hold off; axis('tight');
         %subplot(6,1,6); hold on; plot(detectionsNumenta,'r'); title ('Detections'); hold off; axis('tight');
 
@@ -169,6 +169,11 @@ fprintf (1, '\n Our Raw Scores + Our Anomaly Likelihood: %4.3f (Bootstrap estima
     our_max, mean (bootstrapScores_numenta_Our(:,our_i)), std (bootstrapScores_numenta_Our(:,our_i)), ...
     mean(randomScore(endFile+1,1:19)));
 
-
 figure; plot(S_A(startFile:endFile,sa_i) - numenta_GT(startFile:endFile,gt_i), 'r-o');
+y = S_A(startFile:endFile,sa_i) - numenta_GT(startFile:endFile,gt_i);
+[y, i] = sort(y, 'ascend');
+figure; plot(y, 'r-o'); grid;
 
+for j=1:length(i)
+    fprintf(1, '\n%s', fileNames{i(j)});
+end
