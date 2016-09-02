@@ -76,7 +76,7 @@ for i=startFile:endFile
 
     ourAnomalyLikelihoodNumenta = sequentialAnomalyDectection (data.numentaRawAnomalyScore, 20, displayFlag, find(data.labels, 1));
     anomalyLikelihoodNumenta = data.numentaAnomalyScore; 
-    anomalyLikelihood = sequentialAnomalyDectection (anomalyScores, 17, displayFlag, find(data.labels, 1));
+    anomalyLikelihood = sequentialAnomalyDectection (anomalyScores, 9, displayFlag, find(data.labels, 1));
 
     %% iterate through thresholds
     for j = 1:19
@@ -109,11 +109,13 @@ for i=startFile:endFile
     %% Plot
     if displayFlag
 
-        subplot(6,1,1); plot(data.value{1}); title ('Raw Data'); axis('tight');
-        subplot(6,1,2); plot(anomalyScores); title ('raw Anomaly Score');axis('tight');
-        subplot(6,1,3); plot(data.numentaAnomalyScore, 'b'); title ('Numenta');axis('tight');
-        subplot(6,1,3); hold on; plot(anomalyLikelihoodNumenta,'r'); title ('Numenta'); hold off; axis('tight');
-        subplot(6,1,6); hold on; plot(data.labels,'r');  hold off; axis('tight');
+        subplot(8,1,1); plot(data.value{1}); title ('Raw Data'); axis('tight');
+        subplot(8,1,2); plot(anomalyScores); title ('Raw Anomaly Score (Our Implementation)');axis('tight');
+        subplot(8,1,3); plot(data.numentaRawAnomalyScore, 'b'); title ('Raw Numenta');axis([0 N 0 1]);
+        subplot(8,1,4); plot(anomalyLikelihoodNumenta,'r'); title ('Likelihood Numenta '); hold off; axis([0 N 0 1]);
+        subplot(8,1,5); plot(ourAnomalyLikelihoodNumenta,'r'); title ('Our Implementation of Likelihood Numenta'); hold off; axis([0 N 0 1]);
+
+        subplot(8,1,8); hold on; plot(data.labels,'r');  hold off; axis('tight');
         %subplot(6,1,6); hold on; plot(detections,'b'); title ('Detections'); hold off; axis('tight');
         %subplot(6,1,6); hold on; plot(detectionsNumenta,'r'); title ('Detections'); hold off; axis('tight');
 

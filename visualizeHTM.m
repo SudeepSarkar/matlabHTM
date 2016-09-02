@@ -9,24 +9,33 @@ function y = visualizeHTM (iteration, x, data)
 %
 global  SM  anomalyScores predictions
 
-subplot(10, 1, 1); spy(SM.CellPredicted); title ('Predicted cells')
-%subplot(10, 1, 2); spy(SM.CellActive); title ('Active cells')
-subplot (10,1,2); spy(SM.SynapseWith); title ('Synapse Potential Pool for synapse formation')
+%subplot(10, 1, 1); spy(SM.cellPredicted); title ('Predicted cells')
+%subplot(10, 1, 3); spy(SM.cellActive); title ('Active cells')
+%subplot (10,1,2); spy(SM.cellLearn); title ('Learning cells')
 
-subplot(10, 1, 3); plot(x); axis([1 length(x) 0 1]); title ('Input')
+%subplot(10, 1, 3); plot(x); axis([1 length(x) 0 1]); title ('Input')
 
-[~, ~, cellID] = find(SM.DendriteToCell);
-C = sparse (SM.M, SM.N); C(unique(cellID)) = 1;
-subplot (10,1, 2); hold on; plot(logical(sum(C)) & logical(sum(SM.CellActive)), 'r'); hold off;
+% [~, ~, cellID] = find(SM.dendriteToCell);
+% C = sparse (SM.M, SM.N); C(unique(cellID)) = 1;
+% subplot (10,1, 2); hold on; plot(logical(sum(C)) & logical(sum(SM.cellActive)), 'r'); hold off;
+% 
 
+subplot (10,1,4); plot (SM.dendritePositive (1:SM.totalDendrites ))
+title ('Positive Dendrites')
 
-subplot (10,1,4); plot (SM.DendriteActive (1:SM.totalDendrites ))
-title ('Active Dendrites')
+% subplot (10,1,1); plot (nonzeros(SM.synapseToDendrite)); axis('tight');
+% title ('Synapse to Dendrites')
+% 
+% [i, c] = ind2sub([SM.M, SM.N], nonzeros(SM.synapseToCell));
+% x = zeros(SM.N, 1); x(c) = 2;
+% subplot (10,1,2); plot (x, 'r'); axis('tight'); hold on;
+% plot(SM.inputPrevious, 'g'); hold off;
+% title ('Synapse to Cells')
 
-subplot (10,1,5); plot (SM.synapseActive, ones(size(SM.synapseActive)), 'bo')
-title ('Active Synapses')
+% subplot (10,1,5); plot (SM.synapseLearn, ones(size(SM.synapseLearn)), 'bo')
+% title ('Learn Synapses')
 
-subplot (10,1,6); plot (nonzeros(SM.SynapsePermanence)); axis('tight');
+subplot (10,1,6); plot (nonzeros(SM.synapsePermanence)); axis('tight');
 title ('Synapse Permanences')
         
 subplot(10,1,7); 

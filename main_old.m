@@ -230,7 +230,7 @@ for iteration = 1:data.N
         %figure(h2); 
         %displayCellAnimation; pause (0.00001); 
         %figure(h1);
-        visualizeHTM (iteration, SM.Input, data); pause (0.0001);
+        visualizeHTM_old (iteration, SM.Input, data); pause (0.0001);
     end;
     %% Predict next state
     SM.CellActivePrevious = SM.CellActive;

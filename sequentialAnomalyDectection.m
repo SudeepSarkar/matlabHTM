@@ -30,8 +30,9 @@ N = length(anomalyScores);
 
 mu = zeros(N, 1);
 sigma = zeros(N, 1);
-trN = 1;
-mu (trN) = anomalyScores(trN); sigma (trN) = 0.2;
+trN = 1;trN = min (750, round(0.15*N));
+
+mu (trN) = anomalyScores(trN); sigma (trN) = 0.0;
 for (k=trN+1:N)
     mu (k) = ((k-1-trN)*  mu(k-1) + anomalyScores(k))/(k-trN);
     sigma (k) = sigma (k-1) + (anomalyScores(k) - mu(k))*(anomalyScores(k) - mu(k));
@@ -64,10 +65,10 @@ anomalyLikelihood (1:trN) = 0;
 %%%
 
 if displayFlag
-    subplot(6,1,4); plot(filteredScores); title ('Short Term mean');axis('tight');
-    subplot(6,1,4); hold on; plot(mu, 'g'); title ('Short Term mean');axis('tight');
-    subplot(6,1,4); hold on; plot(mu-sigma, 'm'); title ('Short Term mean'); hold off; axis('tight');
-    subplot(6,1,4); hold on; plot(mu+sigma, 'm'); title ('Short Term mean'); hold off; axis('tight');
-    subplot(6,1,6); plot(anomalyLikelihood,'g'); title ('Anomaly Likelihood'); hold off; axis([0 N 0 1]);
-    subplot(6,1,5); plot(zScores,'b'); title ('z scores'); hold off; axis('tight');
+    subplot(8,1,6); plot(filteredScores); title ('Short Term mean');axis('tight');
+    subplot(8,1,6); hold on; plot(mu, 'g'); title ('Short Term mean');axis('tight');
+    subplot(8,1,6); hold on; plot(mu-sigma, 'm'); title ('Short Term mean'); hold off; axis('tight');
+    subplot(8,1,6); hold on; plot(mu+sigma, 'm'); title ('Short Term mean'); hold off; axis('tight');
+    subplot(8,1,8); plot(anomalyLikelihood,'b'); title ('Anomaly Likelihood'); hold off; axis([0 N 0 1]);
+    subplot(8,1,7); plot(zScores,'b'); title ('z scores'); hold off; axis('tight');
 end

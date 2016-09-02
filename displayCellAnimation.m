@@ -11,44 +11,56 @@ function y = displayCellAnimation ()
 global  SM 
 
 % Plot past state of the cell array on the left side
-nzInput = find(SM.InputPrevious);
-plot(-0.3 *ones(size(nzInput)), nzInput./length(SM.InputPrevious), 'bo'); hold on;
+nzInput = find(SM.inputPrevious);
+plot(-0.3 *ones(size(nzInput)), nzInput./length(SM.inputPrevious), 'bo'); hold on;
 
-[xAP, yAP] = find (SM.CellActivePrevious); 
+[xAP, yAP] = find (SM.cellActivePrevious); 
 xAP = xAP/SM.M; yAP = yAP/SM.N;
 plot(xAP, yAP, 'r+'); axis ([-1 4 0 1]); 
 
 % Plot past state of the cell array on the right side
 
-nzInput = find(SM.Input);
-plot(3.2 *ones(size(nzInput)), nzInput./length(SM.Input), 'bo');
+nzInput = find(SM.input);
+plot(3.2 *ones(size(nzInput)), nzInput./length(SM.input), 'bo');
 
-[xCP, yCP] = find (SM.CellPredicted); 
+[xCP, yCP] = find (SM.cellPredicted); 
 xCP = xCP/SM.M + 2; yCP = yCP/SM.N;
 plot(xCP, yCP, 'bs', 'MarkerSize', 10);  hold on;
 
-[xCA, yCA] = find (SM.CellActive); 
+[xCP, yCP] = find (SM.cellLearn); 
+xCP = xCP/SM.M + 2; yCP = yCP/SM.N;
+plot(xCP, yCP, 'mo', 'MarkerSize', 10);  hold on;
+
+[xCP, yCP] = find (SM.cellLearnPrevious); 
+xCP = xCP/SM.M; yCP = yCP/SM.N;
+plot(xCP, yCP, 'mo', 'MarkerSize', 10);  hold on;
+
+[xCA, yCA] = find (SM.cellActive); 
 xCA = xCA/SM.M + 2; yCA = yCA/SM.N;
 plot(xCA, yCA, 'r+');  hold on;
 
-[dendrite, ~, cellID] = find(SM.DendriteToCell); 
-yDendrite = dendrite(logical(SM.DendriteActive))./SM.totalDendrites;
+[dendrite, ~, cellID] = find(SM.dendriteToCell); 
+yDendrite = dendrite(logical(SM.dendriteActive))./SM.totalDendrites;
 xDendrite = 1.5 *ones(size(yDendrite));
 [xCell, yCell] = ind2sub([SM.M, SM.N], cellID);
-yCell = yCell(logical(SM.DendriteActive))/SM.N; xCell = xCell(logical(SM.DendriteActive))/SM.M + 2; 
+yCell = yCell(logical(SM.dendriteActive))/SM.N; xCell = xCell(logical(SM.dendriteActive))/SM.M + 2; 
 
 
 line ([xDendrite'; xCell'], [yDendrite'; yCell'], 'Marker','.','LineStyle','-', 'color', 'g');
 
 
-[synapse2, ~, cellID] = find(SM.SynapseToCell); 
+[synapse2, ~, cellID] = find(SM.synapseToCell); 
 [xCell, yCell] = ind2sub([SM.M, SM.N], cellID);
+%yCell2 = yCell/SM.N; xCell2 = xCell/SM.M; 
 yCell = yCell(SM.synapseActive)/SM.N; xCell = xCell(SM.synapseActive)/SM.M; 
 
-[synapse1, ~, dendrite] = find(SM.SynapseToDendrite); 
+[synapse1, ~, dendrite] = find(SM.synapseToDendrite); 
 yDendrite = dendrite(SM.synapseActive)./SM.totalDendrites;
 xDendrite = 1.5 *ones(size(yDendrite));
+%yDendrite2 = dendrite/SM.totalDendrites;
+%xDendrite2 = 1.5 *ones(size(yDendrite2));
 
+%line ([xDendrite2'; xCell2'], [yDendrite2'; yCell2'], 'Marker','.','LineStyle','-.', 'color', 'g');
 line ([xDendrite'; xCell'], [yDendrite'; yCell'], 'Marker','.','LineStyle','-', 'color', 'g');
 
 

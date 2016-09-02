@@ -17,7 +17,7 @@ data.buckets = [120, 12, 7, 24, 2];
 data.width = [width, width, width, width, width];
 
 data.circularP = [false, true, true, true, true];
-data.shift = [5 1 1 1 width];
+data.shift = [1 1 1 1 width];
 
 %% Read data
 readData = importdata (filename);
@@ -60,7 +60,7 @@ for  i=1:length(data.fields);
     end;
 
     data.code{j} = encoderScalar (data.nBits(j), data.buckets(j), data.width(j), data.shift (j));
-    fprintf(1, '%d ', data.nBits(j));
+    %fprintf(1, '%d ', data.nBits(j));
 end;
 
 

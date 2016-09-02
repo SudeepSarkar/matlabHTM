@@ -9,7 +9,7 @@ function y = main  (inFile, outFile, displayFlag, learnFlag, learntDataFile)
 % Parameters follow the ones specified at
 %https://github.com/numenta/nupic/blob/master/src/nupic/frameworks/opf/common_models/anomaly_params_random_encoder/best_single_metric_anomaly_params_tm_cpp.json
 %
-% Copyright (c) 2016,  Sudeep Sarkar, University of South Florida, Tampa, USA
+%% Copyright (c) 2016,  Sudeep Sarkar, University of South Florida, Tampa, USA
 % This work is licensed under the Attribution-NonCommercial-ShareAlike 4.0 International License. 
 % To view a copy of this license, visit https://creativecommons.org/licenses/by-nc-sa/4.0/
 % This program is distributed in the hope that it will be useful,
@@ -29,9 +29,9 @@ if learnFlag
     SM.Ns = 40; %Maximum number of synapses per dendritic segment
     
     
-    SM.Theta = 20; %Dendritic segment activation threshold
+    SM.Theta = 15; %Dendritic segment activation threshold
     SM.minPositiveThreshold = 10;
-    SM.P_initial = 0.21; %Initial synaptic permanence
+    SM.P_initial = 0.24; %Initial synaptic permanence
     SM.P_thresh = 0.5; %Connection threshold for synaptic permanence
     SM.P_incr = 0.04; %Synaptic permanence increment
     SM.P_decr = 0.008; %Synaptic permanence decrement
@@ -138,7 +138,8 @@ if learnFlag
 else
     load (learntDataFile);
     %% Input
-    data = encoderInertial (inFile, SP.width);
+    %data = encoderInertial (inFile, SP.width);
+    data = encoderNAB (inFile, SP.width);
 
 end;  
   
@@ -150,6 +151,7 @@ predictions = zeros(2, data.N); % initialize array allocaton -- faster on matlab
 MaxDataValue = max(data.value{1});
 SM.inputPrevious = zeros(SM.N, 1);
 data.inputCodes = [];
+data.outputCodes = [];
 
 if displayFlag
     h1 = gcf;
@@ -169,13 +171,14 @@ for iteration = 1:data.N
     %% Run through Spatial Pooler(without learning)
     SP.boost = ones (SM.N, 1);
     [SM.input, ~] = spatialPooler (x, false, displayFlag);
+    data.outputCodes = [data.outputCodes; SM.input];
     
-     if (iteration > 1)
-        fprintf ('\n %d %d', nnz(SM.input & SM.inputPrevious), nnz(data.inputCodes(iteration-1,:) & data.inputCodes(iteration,:)));
-        plot(nnz(SM.input & SM.inputPrevious), ...
-            nnz(data.inputCodes(iteration-1,:) & data.inputCodes(iteration,:)), 'ro');
-        hold on; pause (0.0001);
-     end
+%      if (iteration > 1)
+%         fprintf ('\n %d %d', nnz(SM.input & SM.inputPrevious), nnz(data.inputCodes(iteration-1,:) & data.inputCodes(iteration,:)));
+%         plot(nnz(SM.input & SM.inputPrevious), ...
+%             nnz(data.inputCodes(iteration-1,:) & data.inputCodes(iteration,:)), 'ro');
+%         hold on; pause (0.0001);
+%      end
     %% Anomaly detection score
     % Two option -- (i) based on reconstructed signal or (ii) based on predicted SM
     % signal. Option (i) assumes that we have a good SP that is invertible.
@@ -183,13 +186,13 @@ for iteration = 1:data.N
     
     pi = logical(sum(SM.cellPredicted));
     
-    %option (i)
-        ri = (pi* double(SP.synapse > SP.connectPerm)) > 1;
-        anomalyScores (iteration) = 1 - nnz(ri(1:data.nBits(1)) & x(1:data.nBits(1)))/...
-            nnz(x(1:data.nBits(1)));
-    %
+%     %option (i)
+%         ri = (pi* double(SP.synapse > SP.connectPerm)) > 1;
+%         anomalyScores (iteration) = 1 - nnz(ri(1:data.nBits(1)) & x(1:data.nBits(1)))/...
+%             nnz(x(1:data.nBits(1)));
+%     %
     %option (ii)
-%     anomalyScores (iteration) = 1 - nnz(pi & SM.input)/nnz(SM.input);
+     anomalyScores (iteration) = 1 - nnz(pi & SM.input)/nnz(SM.input);
     
     %% Decode prediction from previous state and compare to current input.
     
@@ -206,16 +209,14 @@ for iteration = 1:data.N
     
     %%
     %anomalyScores (iteration) = compute_active_cells (SM.input); % based on x and PI_1 (prediction from past cycle)
-    compute_active_cells (SM.input); % based on x and PI_1 (prediction from past cycle)
-    
+    markActiveStates (); % based on x and PI_1 (prediction from past cycle)
     
     %% Learn
     
     if learnFlag
-        reinforce_synapse ();
-        %if (anomalyScores (iteration) > 0.2) 
-            grow_dendrite (); 
-        %end;
+       markLearnStates ();
+       updateSynapses ();
+       
     end;
     
     %% DISPLAY
@@ -230,19 +231,24 @@ for iteration = 1:data.N
             iteration, data.value{1}(iteration),  ...
             SM.totalDendrites, SM.totalSynapses, ...
             anomalyScores(iteration));
-        %figure(h2); 
-        %displayCellAnimation; pause (0.00001); 
-        %figure(h1);
-        visualizeHTM (iteration, SM.input, data); pause (0.0001);
+        if (iteration > 2)
+            %figure(h2);
+            %displayCellAnimation;
+            %figure(h1);
+            visualizeHTM (iteration, SM.input, data); pause (0.0001);
+        end;
     end;
     %% Predict next state
+    SM.cellPredictedPrevious = SM.cellPredicted;
+    
+    markPredictiveStates ();
+    
+    %%
+    
+    %%
+    %sum(ismember(find(SM.cellLearn), find(SM.cellActive)))
+
     SM.cellActivePrevious = SM.cellActive;
-    SM.cellPredictivePrevious = SM.cellPredictive;
-    compute_predictive_states;
-    
-    %%
-    
-    %%
     SM.inputPrevious = SM.input;
     SM.cellLearnPrevious = SM.cellLearn;
     

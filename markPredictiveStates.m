@@ -24,9 +24,11 @@ global  SM;
 % Note --- the underlying synapse/dendrite/cell pointer-based data structure is oriented in the following way
 % Cell body affecting (input) <-- synapse --> dendrites�--> cell body affected (output)
 
-%SM.SynapseActive = []; %(:) = 0; % synapses that have permanences above a threshold
+SM.SynapseActive = []; %(:) = 0; % synapses that have permanences above a threshold
+SM.SynapsePositive = []; %(:) = 0; % synapses that have positive permanences 
+SM.SynapseLearn = []; %(:) = 0; % synapses that have positive permanences 
+
 SM.dendriteActive (:) = 0;
-%SM.SynapsePositive = []; %(:) = 0; % synapses that have positive permanences 
 SM.dendritePositive (:) = 0;
 SM.dendriteLearn (:) = 0;
 
@@ -51,11 +53,11 @@ synapseInputL = synapse(xL);
 % synapse(x) is a list of synapses connected to active cells
 
 
-aboveThresh = find(SM.SynapsePermanence > SM.P_thresh);
+aboveThresh = find(SM.synapsePermanence > SM.P_thresh);
 SM.synapseActive = intersect(synapseInput, aboveThresh);
 
-aboveZero = find(SM.SynapsePermanence > 0);
-SM.synapsePositive = intersect(synapseInput, SM.synapsePositive);
+aboveZero = find(SM.synapsePermanence > 0);
+SM.synapsePositive = intersect(synapseInput, aboveZero);
 
 SM.synapseLearn = intersect(synapseInputL, aboveZero);
 
@@ -70,7 +72,7 @@ SM.synapseLearn = intersect(synapseInputL, aboveZero);
 d = SM.synapseToDendrite(SM.synapseActive);
 [y, i] = hist (d, unique(d));
 SM.dendriteActive (i) = y;
-%SM.dendriteActive = double(SM.dendriteActive > SM.Theta);
+SM.dendriteActive = double(SM.dendriteActive > SM.Theta);
 
 
 %% Mark the potentially active dendrites with their total
@@ -84,6 +86,8 @@ SM.dendritePositive (i) = y;
 d = SM.synapseToDendrite(SM.synapseLearn);
 [y, i] = hist (d, unique(d));
 SM.dendriteLearn (i) = y;
+SM.dendriteLearn = double(SM.dendriteLearn > SM.Theta);
+
 
 %% Mark the predicted cells as those with at least one active dendrite
 % DendriteToCell vector stores the index of the cell body it is connected to (affecting)
@@ -91,7 +95,7 @@ SM.dendriteLearn (i) = y;
 %  
 
 SM.cellPredicted (:)= 0; 
-[x, ~, ~] = find(SM.dendriteActive > SM.Theta); % active dendrites
+[x, ~, ~] = find(SM.dendriteActive); % active dendrites
 u = unique(SM.dendriteToCell(x));
 SM.cellPredicted (u) = true;
 
