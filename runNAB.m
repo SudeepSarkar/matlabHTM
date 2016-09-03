@@ -171,11 +171,11 @@ fprintf (1, '\n Our Raw Scores + Our Anomaly Likelihood: %4.3f (Bootstrap estima
     our_max, mean (bootstrapScores_numenta_Our(:,our_i)), std (bootstrapScores_numenta_Our(:,our_i)), ...
     mean(randomScore(endFile+1,1:19)));
 
-figure; plot(S_A(startFile:endFile,sa_i) - numenta_GT(startFile:endFile,gt_i), 'r-o');
-y = S_A(startFile:endFile,sa_i) - numenta_GT(startFile:endFile,gt_i);
-[y, i] = sort(y, 'ascend');
-figure; plot(y, 'r-o'); grid;
-
-for j=1:length(i)
-    fprintf(1, '\n%s', fileNames{i(j)});
-end
+% figure; plot(S_A(startFile:endFile,sa_i) - numenta_GT(startFile:endFile,gt_i), 'r-o');
+% y = S_A(startFile:endFile,sa_i) - numenta_GT(startFile:endFile,gt_i);
+% [y, i] = sort(y, 'ascend');
+% figure; plot(y, 'r-o'); grid;
+% 
+% for j=1:length(i)
+%     fprintf(1, '\n%s', fileNames{i(j)});
+% end
