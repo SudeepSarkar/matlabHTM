@@ -1,6 +1,8 @@
 # matlabHTM
 -- Summer 2016 project by Sudeep Sarkar http://www.cse.usf.edu/~sarkar/
 
+https://github.com/SudeepSarkar/matlabHTM
+
 This is an implementation of Numenta's Hierachical Temporal Machines (HTM) 
 and its testing on the Numenta Anomaly Dataset (NAB). It implements both the 
 spatial pooler (SP) and the sequence memory (SM or temporal memory) modules. 

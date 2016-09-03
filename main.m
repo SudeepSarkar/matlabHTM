@@ -19,6 +19,7 @@ function y = main  (inFile, outFile, displayFlag, learnFlag, learntDataFile)
 % but WITHOUT ANY WARRANTY; without even the implied warranty of
 % MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 %
+% on https://github.com/SudeepSarkar/matlabHTM
 
 global  SM SP data anomalyScores iteration predictions
 
