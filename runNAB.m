@@ -74,7 +74,7 @@ for i=startFile:endFile
     %% detect anomaly likelihood
     % shortW (one of the parameters) = 30, 20, 10, 5 -- 
 
-    ourAnomalyLikelihoodNumenta = sequentialAnomalyDectection (data.numentaRawAnomalyScore, 20, displayFlag, find(data.labels, 1));
+    ourAnomalyLikelihoodNumenta = sequentialAnomalyDectection (data.numentaRawAnomalyScore, 13, displayFlag, find(data.labels, 1));
     anomalyLikelihoodNumenta = data.numentaAnomalyScore; 
     anomalyLikelihood = sequentialAnomalyDectection (anomalyScores, 9, displayFlag, find(data.labels, 1));
 
@@ -85,7 +85,7 @@ for i=startFile:endFile
         
         %% Numenta HTM ground truth Scores
         detectionsNumenta = [0; diff(anomalyLikelihoodNumenta > likelihoodThresh(j))] > 0;
-        [numenta_GT(i, j), ~, ~] = computeScore (anomalyLikelihoodNumenta > likelihoodThresh(j), data.labels, A_tp, A_fp, A_fn);
+        [numenta_GT(i, j), ~, ~] = computeScore (detectionsNumenta, data.labels, A_tp, A_fp, A_fn);
         
         %% Numenta HTM  Scores with our anomaly likelihood computation
         detectionsNumentaOur = [0; diff((ourAnomalyLikelihoodNumenta > likelihoodThresh(j)))] > 0;

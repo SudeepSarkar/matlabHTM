@@ -71,8 +71,8 @@ correctColumns = columnPredicted(selectColumns);
 % tag of 1 - means that the dendrites of the cell will be reinforced.
 % QUESTION: --” All connected dendrites reinforced? NEED TO CHECK THIS. no
 
-linearIndex = sub2ind(size(SM.cellActive), correctRows, correctColumns);
-SM.cellActive (linearIndex) = 1;
+SM.activeCells = sub2ind(size(SM.cellActive), correctRows, correctColumns);
+SM.cellActive (SM.activeCells) = 1;
 
 uniqueCorrectColumns = unique(correctColumns);
 

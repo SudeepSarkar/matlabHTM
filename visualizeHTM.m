@@ -20,9 +20,13 @@ global  SM  anomalyScores predictions
 % subplot (10,1, 2); hold on; plot(logical(sum(C)) & logical(sum(SM.cellActive)), 'r'); hold off;
 % 
 
-subplot (10,1,4); plot (SM.dendritePositive (1:SM.totalDendrites ))
+subplot (10,1,4); plot (SM.dendritePositive (1:SM.totalDendrites )); axis('tight')
 title ('Positive Dendrites')
 
+subplot (10,1,5); plot (SM.numSynpasesPerDendrite (1:SM.totalDendrites )); axis('tight')
+title ('Synapses Per Dendrites')
+
+ 
 % subplot (10,1,1); plot (nonzeros(SM.synapseToDendrite)); axis('tight');
 % title ('Synapse to Dendrites')
 % 

@@ -1,5 +1,12 @@
 #!/bin/bash
- 
+for i in `seq 1 58`;
+do
+         echo $i
+
+done    
+            
+
+
 nice -n 10 matlab -nodisplay -nosplash -nodesktop -r "run('runNAB(1,10,false,true)')"  &
 nice -n 10 matlab -nodisplay -nosplash -nodesktop -r "run('runNAB(11,20,false,true)')"  &
 nice -n 10 matlab -nodisplay -nosplash -nodesktop -r "run('runNAB(21,30,false,true)')"  &

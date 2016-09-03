@@ -3,6 +3,9 @@ function y = main  (inFile, outFile, displayFlag, learnFlag, learntDataFile)
 % initializes the spatial pooler, and (iii) iterates through the data and
 % feed it through the spatial pooler and temporal memory modules.
 %
+% We follow the implementation that is sketched out at
+%http://numenta.com/assets/pdf/biological-and-machine-intelligence/0.4/BaMI-Temporal-Memory.pdf
+%
 % Not all aspects of NUPIC descrived in the link below are implemented.
 % http://chetansurpur.com/slides/2014/5/4/cla-in-nupic.html#42
 %
@@ -26,10 +29,11 @@ if learnFlag
     SM.N = 2048; %Number of columns N
     SM.M = 32; %Number of cells per column M
     SM.Nd = 128; %Maximum number of dendritic segments per cell
-    SM.Ns = 40; %Maximum number of synapses per dendritic segment
+    SM.Ns = 128; %Maximum number of synapses per dendritic segment
+    SM.Nss = 30; %Maximum number of synapses per dendritic segment
+
     
-    
-    SM.Theta = 15; %Dendritic segment activation threshold
+    SM.Theta = 20; %Dendritic segment activation threshold
     SM.minPositiveThreshold = 10;
     SM.P_initial = 0.24; %Initial synaptic permanence
     SM.P_thresh = 0.5; %Connection threshold for synaptic permanence
@@ -64,11 +68,7 @@ if learnFlag
     SM.cellLearn = logical(sparse(SM.M, SM.N));
     SM.cellLearnPrevious = logical(sparse(SM.M, SM.N));
     
-    
-    %SM.learnFlag = sparse(SM.M, SM.N);
-    SM.numDendritesPerCell = sparse (SM.M, SM.N); % stores number of dendrite information per cell
-    SM.numSynapsesPerCell = sparse (SM.M, SM.N); % stores number of dendrite information per cell
-    
+  
     
     % new data structure base on pointers between
     % synapse -> dendrites -> cells and
@@ -79,6 +79,11 @@ if learnFlag
     SM.maxSynapses = round (SP.activeSparse * SM.N * SM.M * SM.Nd * SM.Ns);
     SM.totalDendrites = 0;
     SM.totalSynapses = 0;
+ 
+    SM.numDendritesPerCell = sparse (SM.M, SM.N); % stores number of dendrite information per cell
+    SM.numSynapsesPerCell = sparse (SM.M, SM.N); % stores number of dendrite information per cell
+    SM.numSynpasesPerDendrite = sparse (SM.maxDendrites, 1);
+
     
     SM.synapseToCell = sparse (SM.maxSynapses, 1);
     SM.synapseToDendrite = sparse (SM.maxSynapses, 1);
@@ -122,7 +127,8 @@ if learnFlag
     
     %% Pre Learn Spatial Pooler
     fprintf(1, '\n Learning SP');
-    for iteration = 1:round(0.5*data.N)
+    trN = min (750, round(0.15*data.N));
+    for iteration = 1:trN
         x = [];
         for  i=1:length(data.fields);
             j = data.fields(i);
@@ -232,9 +238,9 @@ for iteration = 1:data.N
             SM.totalDendrites, SM.totalSynapses, ...
             anomalyScores(iteration));
         if (iteration > 2)
-            %figure(h2);
-            %displayCellAnimation;
-            %figure(h1);
+%             figure(h2);
+%             displayCellAnimation;
+%             figure(h1);
             visualizeHTM (iteration, SM.input, data); pause (0.0001);
         end;
     end;
