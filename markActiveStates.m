@@ -52,6 +52,7 @@ global SM
 % reinforced during learning.
 
 SM.cellActive (:) = 0;
+SM.predictedActive (:) = 0;
 %% Set correctly predicted cells to active state
 
 % finds which of the predicted columns are active input column. Note that the predicted column
@@ -71,8 +72,9 @@ correctColumns = columnPredicted(selectColumns);
 % tag of 1 - means that the dendrites of the cell will be reinforced.
 % QUESTION: --” All connected dendrites reinforced? NEED TO CHECK THIS. no
 
-SM.activeCells = sub2ind(size(SM.cellActive), correctRows, correctColumns);
-SM.cellActive (SM.activeCells) = 1;
+correctCells = sub2ind(size(SM.cellActive), correctRows, correctColumns);
+SM.cellActive (correctCells) = 1;
+SM.predictedActive (correctCells) = 1; % needed for temporal pooling
 
 uniqueCorrectColumns = unique(correctColumns);
 

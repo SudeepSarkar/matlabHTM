@@ -19,9 +19,11 @@ if ~isempty(sCells)
             if (SM.numDendritesPerCell(dC) < SM.Nd)
                 
                 SM.numDendritesPerCell(dC) = SM.numDendritesPerCell(dC)+1;
-                SM.totalDendrites= SM.totalDendrites + 1;
-                SM.dendriteToCell (SM.totalDendrites) = dC;
-                expandDendrites (i) = SM.totalDendrites;
+                SM.dendriteToCell (SM.newDendriteID) = dC;
+                expandDendrites (i) = SM.newDendriteID;
+                SM.newDendriteID = SM.newDendriteID + 1;
+                SM.totalDendrites = SM.totalDendrites + 1;
+
             end;
         end; % expand synapses of "expandDendrites"
         %% select synapses from active cells in SM.SynapseWithPrevious.  -- only one per
@@ -39,13 +41,14 @@ if ~isempty(sCells)
             
             randPermanence =  (2*SM.P_incr).*rand(size(sC)) + SM.P_initial - SM.P_incr;
             
-            newSynapses = [(SM.totalSynapses + 1) : (SM.totalSynapses + length(sC))];
+            newSynapses = [(SM.newSynapseID) : (SM.newSynapseID + length(sC)-1)];
             
             SM.synapseToDendrite (newSynapses) = expandDendrites (i) * ones(size(newSynapses)); % stores the index of the dendrite it is connected to
             SM.synapsePermanence (newSynapses) = randPermanence;
             
             SM.synapseToCell (newSynapses) = sC;
             SM.numSynapsesPerCell(sC)  = SM.numSynapsesPerCell(sC) + 1;
+            SM.newSynapseID = SM.newSynapseID + length(sC);
             SM.totalSynapses = SM.totalSynapses + length(sC);
         end;
     end;

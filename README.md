@@ -4,8 +4,9 @@
 https://github.com/SudeepSarkar/matlabHTM
 
 This is an implementation of Numenta's Hierachical Temporal Machines (HTM) 
-and its testing on the Numenta Anomaly Dataset (NAB). It implements both the 
-spatial pooler (SP) and the sequence memory (SM or temporal memory) modules. 
+and its testing on the Numenta Anomaly Dataset (NAB). It implements all the three modules the 
+spatial pooler (SP), the sequence memory (SM or temporal memory), and the temporal pooler (TP)
+modules. 
 
 For the encoders and the spatial pooler, I used the pseudocode and description 
 BAMI, http://numenta.com/biological-and-machine-intelligence/
@@ -28,6 +29,16 @@ http://chetansurpur.com/slides/2014/5/4/cla-in-nupic.html#42
 Note the implementation is NOT faithful to the NUPIC implementation. 
 I did not implement the PAM mode or the backtrack mode.
 
+For the temporal pooler (TP) I used the 2015 version of the temporal pooler concept
+as outlined at 
+
+https://github.com/numenta/nupic.research/wiki/Overview-of-the-Temporal-Pooler
+
+and using implementations at
+ https://github.com/numenta/nupic.research/wiki/Union-Pooler-Psuedocode ,
+ https://github.com/numenta/nupic.research/blob/master/htmresearch/algorithms/union_temporal_pooler.py
+ and
+ https://github.com/numenta/nupic.research/blob/master/htmresearch/frameworks/union_temporal_pooling/union_temporal_pooler_experiment.py
 
 
 For the anomaly detection and scoring parts, I relied on descriptions in the 

@@ -20,11 +20,11 @@ global  SM  anomalyScores predictions
 % subplot (10,1, 2); hold on; plot(logical(sum(C)) & logical(sum(SM.cellActive)), 'r'); hold off;
 % 
 
-subplot (10,1,4); plot (SM.dendritePositive (1:SM.totalDendrites )); axis('tight')
-title ('Positive Dendrites')
-
-subplot (10,1,5); plot (SM.numSynpasesPerDendrite (1:SM.totalDendrites )); axis('tight')
-title ('Synapses Per Dendrites')
+% % subplot (10,1,4); plot (nonzeros(SM.dendritePositive)); axis('tight')
+% % title ('Positive Dendrites')
+% % 
+% % subplot (10,1,5); plot (nonzeros(SM.numSynpasesPerDendrite)); axis('tight')
+% % title ('Synapses Per Dendrites')
 
  
 % subplot (10,1,1); plot (nonzeros(SM.synapseToDendrite)); axis('tight');
@@ -39,9 +39,9 @@ title ('Synapses Per Dendrites')
 % subplot (10,1,5); plot (SM.synapseLearn, ones(size(SM.synapseLearn)), 'bo')
 % title ('Learn Synapses')
 
-subplot (10,1,6); plot (nonzeros(SM.synapsePermanence)); axis('tight');
-title ('Synapse Permanences')
-        
+% subplot (10,1,6); plot (nonzeros(SM.synapsePermanence)); axis('tight');
+% title ('Synapse Permanences')
+%         
 subplot(10,1,7); 
 plot(data.value{1}, 'b'); hold on; axis('tight'); plot([iteration iteration], [0 100], 'r'); hold off;
 title ('Input Signal');

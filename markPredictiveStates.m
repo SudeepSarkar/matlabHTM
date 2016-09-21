@@ -70,22 +70,29 @@ SM.synapseLearn = intersect(synapseInputL, aboveZero);
 %
 
 d = SM.synapseToDendrite(SM.synapseActive);
-[y, i] = hist (d, unique(d));
-SM.dendriteActive (i) = y;
+ud = nonzeros(unique(d));
+y = histc (nonzeros(d), ud);
+SM.dendriteActive (ud) = y;
 SM.dendriteActive = double(SM.dendriteActive > SM.Theta);
 
 
 %% Mark the potentially active dendrites with their total
 
 d = SM.synapseToDendrite(SM.synapsePositive);
-[y, i] = hist (d, unique(d));
-SM.dendritePositive (i) = y;
+
+ud = nonzeros(unique(d));
+y = histc (nonzeros(d), ud);
+
+SM.dendritePositive (ud) = y; % number of active synapses for each dendrite
+
 
 %% Mark the learning dendrites with their total
 
 d = SM.synapseToDendrite(SM.synapseLearn);
-[y, i] = hist (d, unique(d));
-SM.dendriteLearn (i) = y;
+ud = nonzeros(unique(d));
+y = histc (nonzeros(d), ud);
+
+SM.dendriteLearn (ud) = y;
 SM.dendriteLearn = double(SM.dendriteLearn > SM.Theta);
 
 

@@ -63,7 +63,6 @@ if (learnP)
     SP.synapse = SP.synapse.*SP.connections; % zero out the entries with no synapse connection
     
     %% boosting
-    
     SP.minDutyCycle = 0.01 * max (SP.activeDutyCycle);
     SP.activeDutyCycle = (0.9 * SP.activeDutyCycle + 0.1 * sum(active, 2)); % need to change into running average later
         

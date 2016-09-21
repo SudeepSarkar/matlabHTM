@@ -21,7 +21,7 @@ function y = main  (inFile, outFile, displayFlag, learnFlag, learntDataFile)
 %
 % on https://github.com/SudeepSarkar/matlabHTM
 
-global  SM SP data anomalyScores iteration predictions
+global  SM SP TP data anomalyScores iteration predictions
 
 
 
@@ -57,10 +57,30 @@ if learnFlag
     SP.maxBoost = 1; %10;
     SP.width = 21; %21; % number of bits that are one for each state in the input.
     
+    %% parameters for temporal pooler
     
+    
+    TP.potentialPct = 0.5; % Input percentage that are potential synapse
+    TP.connectPerm = 0.1; % Synapses with permanence above this are considered connected.
+    TP.initialConnectPerm = 0.101; % Synapses with permanence above this are considered connected.
+    TP.synPermActiveInc = 0.1; % Increment permanence value for active synapse
+    TP.synPermInactiveDec = 0.01; % Decrement of permanence for inactive synapse
+    TP.stimulusThreshold = 3; % Background noise level from the encoder. Usually set to very low value.
+    TP.activeSparse = 0.02; % sparsity of the representation
+    TP.maxBoost = 2; %10;
+    
+    
+    TP.weightActive = 1.0;
+    TP.weightPredictedActive = 10.0;
+    TP.historyLength = 10;
+    TP.maxUnionActivity = 0.02;
+    TP.baseLinePersistence = 0;
+    TP.extraPersistence = 1;
+    TP.halfLifePersistence = 20;
     %% Setup arrays for sequence memory
     % Copy of cell states used to predict
     SM.cellActive = logical(sparse(SM.M, SM.N));
+    SM.predictedActive = logical(sparse(SM.M, SM.N));
     SM.cellActivePrevious = logical(sparse(SM.M, SM.N)); % previous time
 
     SM.cellPredicted = logical(sparse(SM.M, SM.N));
@@ -80,7 +100,9 @@ if learnFlag
     SM.maxSynapses = round (SP.activeSparse * SM.N * SM.M * SM.Nd * SM.Ns);
     SM.totalDendrites = 0;
     SM.totalSynapses = 0;
- 
+    SM.newDendriteID = 1;
+    SM.newSynapseID = 1;
+
     SM.numDendritesPerCell = sparse (SM.M, SM.N); % stores number of dendrite information per cell
     SM.numSynapsesPerCell = sparse (SM.M, SM.N); % stores number of dendrite information per cell
     SM.numSynpasesPerDendrite = sparse (SM.maxDendrites, 1);
@@ -98,6 +120,10 @@ if learnFlag
     SM.dendriteActive = sparse (SM.maxDendrites, 1);
     SM.dendriteLearn = sparse (SM.maxDendrites, 1);
 
+    %% Input
+    %data = encoderInertial (inFile, SP.width);
+
+    data = encoderNAB (inFile, SP.width);
     
     %% Setup arrays for spatial pooler
     
@@ -106,12 +132,6 @@ if learnFlag
     SP.overlapDutyCycle = zeros (SM.N, 1);
     SP.minDutyCycle = zeros (SM.N, 1);
     
-    %% Input
-    %data = encoderInertial (inFile, SP.width);
-
-    data = encoderNAB (inFile, SP.width);
-    
-    %% Sequence memory (SM) learning
     % Initialize the spatial Pooler
     
     iN = sum(data.nBits(data.fields)); % number of input bits
@@ -125,6 +145,36 @@ if learnFlag
         SP.synapse (i, connectIndex) = randPermTemplate;
         SP.connections (i, connectIndex) = true;
     end;
+    
+    
+    %% Setup arrays for Temporal pooler
+    
+    TP.N = SM.N;
+    TP.iN = SM.M * SM.N; % number of input bits
+    
+    TP.boost = ones (TP.N, 1);
+    TP.activeDutyCycle = zeros (TP.N, 1);
+    TP.overlapDutyCycle = zeros (TP.N, 1);
+    TP.minDutyCycle = zeros (TP.N, 1);
+    TP.poolingActivation = zeros (TP.N, 1);
+    TP.poolingTimer = ones(TP.N, 1)*1000;
+    TP.poolingActivationInitLevel = zeros (TP.N, 1);
+    
+
+    TP.dendrites = zeros (TP.N, 1);
+    TP.nDendrites = 0;
+    TP.nSynapses = 0;
+    TP.synapseToCell = sparse (TP.iN, 1);
+    TP.synapsePermanence = sparse (TP.iN, 1);
+    TP.synapseToDendrite = sparse (TP.iN, 1);
+    
+    %TP.synapse = sparse (TP.N, TP.iN);
+    TP.activeSynapses = logical(sparse (TP.iN, TP.historyLength));
+    TP.historyIndex = 1;
+    TP.unionSDR = zeros(TP.N, 1);
+    TP.unionSDRhistory  = zeros (5000, TP.N);
+
+   
     
     %% Pre Learn Spatial Pooler
     fprintf(1, '\n Learning SP');
@@ -166,26 +216,22 @@ if displayFlag
     figure(h1);
 end;
 fprintf('\n Computing sequence memory. Data length = %d ', data.N);
+
+%% Interate
 for iteration = 1:data.N
     
-    %% Run Spatial pooler
+    %% Run through Spatial Pooler(without learning)
     x = [];
     for  i=1:length(data.fields);
         j = data.fields(i);
         x = [x data.code{j}(data.value{j}(iteration),:)];
     end
     data.inputCodes = [data.inputCodes; x];
-    %% Run through Spatial Pooler(without learning)
     SP.boost = ones (SM.N, 1);
     [SM.input, ~] = spatialPooler (x, false, displayFlag);
     data.outputCodes = [data.outputCodes; SM.input];
     
-%      if (iteration > 1)
-%         fprintf ('\n %d %d', nnz(SM.input & SM.inputPrevious), nnz(data.inputCodes(iteration-1,:) & data.inputCodes(iteration,:)));
-%         plot(nnz(SM.input & SM.inputPrevious), ...
-%             nnz(data.inputCodes(iteration-1,:) & data.inputCodes(iteration,:)), 'ro');
-%         hold on; pause (0.0001);
-%      end
+    
     %% Anomaly detection score
     % Two option -- (i) based on reconstructed signal or (ii) based on predicted SM
     % signal. Option (i) assumes that we have a good SP that is invertible.
@@ -193,13 +239,13 @@ for iteration = 1:data.N
     
     pi = logical(sum(SM.cellPredicted));
     
-%     %option (i)
-%         ri = (pi* double(SP.synapse > SP.connectPerm)) > 1;
-%         anomalyScores (iteration) = 1 - nnz(ri(1:data.nBits(1)) & x(1:data.nBits(1)))/...
-%             nnz(x(1:data.nBits(1)));
-%     %
+    %     %option (i)
+    %         ri = (pi* double(SP.synapse > SP.connectPerm)) > 1;
+    %         anomalyScores (iteration) = 1 - nnz(ri(1:data.nBits(1)) & x(1:data.nBits(1)))/...
+    %             nnz(x(1:data.nBits(1)));
+    %     %
     %option (ii)
-     anomalyScores (iteration) = 1 - nnz(pi & SM.input)/nnz(SM.input);
+    anomalyScores (iteration) = 1 - nnz(pi & SM.input)/nnz(SM.input);
     
     %% Decode prediction from previous state and compare to current input.
     
@@ -226,12 +272,20 @@ for iteration = 1:data.N
        
     end;
     
+    %% Temporal Pooling
+    if (iteration > 150)
+        temporalPooler (true, displayFlag);
+        TP.unionSDRhistory (mod(iteration-1, size(TP.unionSDRhistory, 1))+1, :) =  TP.unionSDR;
+        
+    end;
     %% DISPLAY
     
     if (rem (iteration, 100) == 0)
         fprintf(1, '\n %3.2f (%d d, %d, %d) As: %4.3f', ...
             iteration/data.N, data.value{1}(iteration), SM.totalDendrites, SM.totalSynapses, ...
             anomalyScores(iteration));
+        %imagesc(TP.unionSDRhistory); pause (0.00001);
+
     end;
     if (displayFlag)
         fprintf(1, '\n %d (%d d, %d, %d) As: %4.3f ', ...
@@ -244,6 +298,13 @@ for iteration = 1:data.N
 %             figure(h1);
             visualizeHTM (iteration, SM.input, data); pause (0.0001);
         end;
+    end;
+    
+    %% Remove inactive dendrites. This is done for memory and speed reasons
+    % The more "dead" dendrites we carry around, the slower is the
+    % execution
+    if (SM.totalDendrites > 1000) 
+        removeDendrites;
     end;
     %% Predict next state
     SM.cellPredictedPrevious = SM.cellPredicted;
@@ -262,6 +323,7 @@ for iteration = 1:data.N
     
 end;
 %visualizeHTM (iteration, SM.input, data);
+imagesc(TP.unionSDRhistory); pause (0.00001);
 pause (0.0000000000001);
 
 if learnFlag

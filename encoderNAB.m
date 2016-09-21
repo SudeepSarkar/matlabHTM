@@ -45,7 +45,7 @@ data.nBits(1) = data.shift(1)*data.buckets(1) + data.width(1) - 1;
 
 %% assign selected data as specified in the variable data.fields to the output
 
-fprintf(1, '\n Bits of rep:');
+%fprintf(1, '\n Bits of rep:');
 for  i=1:length(data.fields);
     j = data.fields(i);
     data.name{j} = fieldNames(j);
