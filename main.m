@@ -185,7 +185,7 @@ if learnFlag
             j = data.fields(i);
             x = [x data.code{j}(data.value{j}(iteration),:)];
         end
-        [xSM, ~] = spatialPooler (x, true, false);
+         xSM = spatialPooler (x, true, false);
         
         ri = (xSM* double(SP.synapse > SP.connectPerm)) > 1;
         rError = nnz(x(1:data.nBits(1))) - nnz(ri(1:data.nBits(1)) & x(1:data.nBits(1)));
@@ -228,7 +228,7 @@ for iteration = 1:data.N
     end
     data.inputCodes = [data.inputCodes; x];
     SP.boost = ones (SM.N, 1);
-    [SM.input, ~] = spatialPooler (x, false, displayFlag);
+    SM.input = spatialPooler (x, false, displayFlag);
     data.outputCodes = [data.outputCodes; SM.input];
     
     

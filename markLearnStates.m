@@ -36,15 +36,18 @@ activeCols = find(SM.input);
 
 [xL, ~, ~] = find(SM.dendriteLearn); % active learning dendrites
 uL = unique(SM.dendriteToCell(xL)); % marks cells with active learning dendrites
-lc_cols = find(SM.predictedActive (uL));
-[R, C] = ind2sub ([SM.M, SM.N], lc_cols);
-% u = ismember (SM.predictedActiveCells, uL); % which of the active cells are connected to learning dendrites
-% [R, C] = ind2sub ([SM.M, SM.N], SM.predictedActiveCells(u));
-
-[C,IA,~] = unique(C);  R = R(IA); % select only one active per column
-
-SM.cellLearn(sub2ind([SM.M, SM.N], R, C)) = true;
-
+if ~isempty(SM.predictedActive)
+    lc_cols = find(SM.predictedActive (uL));
+    [R, C] = ind2sub ([SM.M, SM.N], lc_cols);
+    % u = ismember (SM.predictedActiveCells, uL); % which of the active cells are connected to learning dendrites
+    % [R, C] = ind2sub ([SM.M, SM.N], SM.predictedActiveCells(u));
+    
+    [C,IA,~] = unique(C);  R = R(IA); % select only one active per column
+    
+    SM.cellLearn(sub2ind([SM.M, SM.N], R, C)) = true;
+else
+   lc_cols = [] 
+end;
 %% find the active columns without a learnCell state set -- activeCols
 %[~, lc_cols]  = find(SM.predictedActiveCells(u));
 [~, x] = setdiff(activeCols, lc_cols);
