@@ -1,5 +1,6 @@
 function data = encoderNAB (filename, width)
-% used to encode the data in the csv file.
+% Encodes the data in the input csv file provided in the Numenta Anomaly
+% Database in terms of binary semantic representations.
 %
 % Copyright (c) 2016,  Sudeep Sarkar, University of South Florida, Tampa, USA
 % This work is licensed under the Attribution-NonCommercial-ShareAlike 4.0 International License. 
