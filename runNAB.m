@@ -50,6 +50,7 @@ numenta_Our = zeros (60, 30);
 fid = fopen('fileList.txt', 'r');
 i = 1;
 while ~feof(fid)
+    fscanf(fid, '%d ', 1); % skip the line count in the first column
     fileNames{i} = fscanf(fid, '%s ', 1);
     i = i+1;
 end;
