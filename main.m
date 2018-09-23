@@ -52,9 +52,9 @@ if learnFlag
     
     end; 
     fprintf(1, 'done.');
-else % already learnt spatial pooler and sequence memory is present in learntDataFile
+else
+    %% already learnt spatial pooler and sequence memory is present in learntDataFile
     load (learntDataFile);
-    %% Input
     data = encoderNAB (inFile, SP.width);
 
 end;  
