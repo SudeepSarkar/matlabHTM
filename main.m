@@ -36,7 +36,7 @@ if learnFlag
    initialize;
     
     %% Learning mode for Spatial Pooler
-    fprintf(1, '\n Learning SP');
+    fprintf(1, '\n Learning sparse distributed representations using spatial pooling...');
     trN = min (750, round(0.15*data.N));
     for iteration = 1:trN
         x = [];
@@ -51,6 +51,7 @@ if learnFlag
         if (rError ~= 0) fprintf(1, '%4.3f ', rError); end;
     
     end; 
+    fprintf(1, 'done.');
 else % already learnt spatial pooler and sequence memory is present in learntDataFile
     load (learntDataFile);
     %% Input
@@ -73,7 +74,7 @@ if displayFlag
     figure; h2 = gcf;
     figure(h1);
 end;
-fprintf('\n Computing sequence memory. Data length = %d ', data.N);
+fprintf('\n Running input of length %d through sequence memory to detect anomaly...', data.N);
 
 %% Interate
 for iteration = 1:data.N
@@ -130,25 +131,23 @@ for iteration = 1:data.N
        
     end;
     
-    %% Temporal Pooling
-    if (iteration > 150)
-        temporalPooler (true, displayFlag);
-        TP.unionSDRhistory (mod(iteration-1, size(TP.unionSDRhistory, 1))+1, :) =  TP.unionSDR;
-        
-    end;
+    %% Temporal Pooling -- remove comments below to invoke temporal pooling.
+%     if (iteration > 150)
+%         temporalPooler (true, displayFlag);
+%         TP.unionSDRhistory (mod(iteration-1, size(TP.unionSDRhistory, 1))+1, :) =  TP.unionSDR;
+%         
+%     end;
     %% DISPLAY
     
     if (rem (iteration, 100) == 0)
-        fprintf(1, '\n %3.2f (%d d, %d, %d) As: %4.3f', ...
-            iteration/data.N, data.value{1}(iteration), SM.totalDendrites, SM.totalSynapses, ...
-            anomalyScores(iteration));
+        fprintf(1, '\n Fraction done: %3.2f, SM.totalDendrites: %d, SM.totalSynapses: %d', ...
+            iteration/data.N, SM.totalDendrites, SM.totalSynapses);
         %imagesc(TP.unionSDRhistory); pause (0.00001);
 
     end;
     if (displayFlag)
-        fprintf(1, '\n %d (%d d, %d, %d) As: %4.3f ', ...
-            iteration, data.value{1}(iteration),  ...
-            SM.totalDendrites, SM.totalSynapses, ...
+        fprintf(1, '\n Fraction done: %3.2f Input:%d SM.totalDendrites: %d, SM.totalSynapses: %d, anomalyScore= %4.3f', ...
+            iteration/data.N, data.value{1}(iteration), SM.totalDendrites, SM.totalSynapses, ...
             anomalyScores(iteration));
         if (iteration > 2)
 %             figure(h2);
@@ -158,12 +157,6 @@ for iteration = 1:data.N
         end;
     end;
     
-    %% Remove inactive dendrites. This is done for memory and speed reasons
-    % The more "dead" dendrites we carry around, the slower is the
-    % execution
-    if (SM.totalDendrites > 1000) 
-        removeDendrites;
-    end;
     %% Predict next state
     SM.cellPredictedPrevious = SM.cellPredicted;
     
@@ -180,9 +173,11 @@ for iteration = 1:data.N
     
     
 end;
+fprintf('\n Running input of length %d through sequence memory to detect anomaly...done', data.N);
+
 %visualizeHTM (iteration, SM.input, data);
-imagesc(TP.unionSDRhistory); pause (0.00001);
-pause (0.0000000000001);
+% imagesc(TP.unionSDRhistory); pause (0.00001);
+% pause (0.0000000000001);
 
 if learnFlag
     save (sprintf('Output/HTM_SM_%s.mat', outFile), ...
