@@ -63,16 +63,16 @@ if (newIn)
         newOut = randi(length(availableDendrites), 1, nOut); % randomly pick a fraction of the available output columns
         newOut = availableDendrites(newOut);
         TP.dendrites (newOut)  = 1;
-    end;
+    end
     
     % create newOut dendrities linked to newIn cells
     if (newIn)
         if (newOut)
             addTPDendrites (newIn, newOut)
-        end;
-    end;
+        end
+    end
        
-end;
+end
 
 %% Compute current active cells based on current input  
 
@@ -126,7 +126,7 @@ if (learnP)
     boostedOverlaps = totalOverlap.*TP.boost; 
 else 
     boostedOverlaps = totalOverlap;
-end;
+end
 
 [~,I] = sort (boostedOverlaps, 'descend');
 activeDendrites = (boostedOverlaps > TP.stimulusThreshold);
@@ -146,7 +146,7 @@ if (displayFlag)
     
     subplot(10,1,3); plot(activeDendrites, 'b.'); hold on;
     title ('active dendrites (blue) union SDR (red)'); 
-end;
+end
 
 activeDendrites = find(activeDendrites);
 
@@ -181,7 +181,7 @@ if (displayFlag)
     title ('Pooling Activation (red)  poolingTimer (blue) poolingActivationInit (green)');
     
   
-end;
+end
 
 %% Sparsification
 
@@ -204,7 +204,7 @@ unionSDR = find(TP.unionSDR);
 
 if (displayFlag)
     subplot(10,1,3); plot(TP.unionSDR, 'r'); hold off;
-end;
+end
 
 
 if (learnP)
@@ -302,7 +302,7 @@ if (learnP)
 %         title ('activeDutyCycle (red), overlapDutyCycle (blue)');
 %         
 %     end;
-end;
+end
 
 
 %%%

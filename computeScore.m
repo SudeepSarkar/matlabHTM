@@ -24,7 +24,7 @@ weights = zeros(size(labels));
 falseNegatives = 0;
 perfectScore = sum(((1+exp(-5.2)).^(-1))*(dlabels > 0));
 
-for (k = 1:length(labels))
+for k = 1:length(labels)
     windowL = windowL + labels(k);
     
     if (dlabels (k) < 0)
@@ -41,11 +41,11 @@ for (k = 1:length(labels))
             detections (max(1, k-windowL)+firstAlert:k) = 0;
         else
             falseNegatives = falseNegatives + 1;
-        end;
+        end
         windowL = 0;
         nullScore = nullScore + A_fn;
-    end;
-end;
+    end
+end
 
 labels = 2*weights - 1;
 

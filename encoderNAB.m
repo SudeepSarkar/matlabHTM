@@ -47,7 +47,7 @@ data.nBits(1) = data.shift(1)*data.buckets(1) + data.width(1) - 1;
 %% assign selected data as specified in the variable data.fields to the output
 
 %fprintf(1, '\n Bits of rep:');
-for  i=1:length(data.fields);
+for  i=1:length(data.fields)
     j = data.fields(i);
     data.name{j} = fieldNames(j);
     
@@ -58,11 +58,11 @@ for  i=1:length(data.fields);
         dataRange +1);
     else
         data.value{j} = ones(size(rawData(:, j)));
-    end;
+    end
 
     data.code{j} = encoderScalar (data.nBits(j), data.buckets(j), data.width(j), data.shift (j));
     %fprintf(1, '%d ', data.nBits(j));
-end;
+end
 
 
 function [SDR] = encoderScalar (n, buckets, width, shift)
@@ -73,6 +73,6 @@ sdr = [ones(1, width) zeros(1, n - width)]';
 for i = 1:buckets
     SDR = [SDR sdr];
     sdr = circshift(sdr, [shift 0]);
-end;
+end
 
 SDR = SDR';

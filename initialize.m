@@ -84,7 +84,7 @@ global  SM SP TP data
         connectIndex = sort(randi (iN, 1, W)); % 1 by W sized matrix of random inputs.
         SP.synapse (i, connectIndex) = randPermTemplate;
         SP.connections (i, connectIndex) = true;
-    end;
+    end
     
     %% Setup arrays for sequence memory
     % Copy of cell states used to predict

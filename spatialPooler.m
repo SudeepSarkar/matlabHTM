@@ -13,7 +13,7 @@ function active = spatialPooler (encodedInput, learnP, displayFlag)
 global  SM SP
 
 % flip row vector input into column vector, if needed.
-if size(encodedInput, 1) == 1, encodedInput = encodedInput'; end;
+if size(encodedInput, 1) == 1, encodedInput = encodedInput'; end
 
 
 %% compute overlap
@@ -25,7 +25,7 @@ overThreshold = (overlap > SP.stimulusThreshold);
 SP.overlapDutyCycle = 0.9 * SP.overlapDutyCycle + 0.1 * overThreshold;
 
 overlap = overThreshold.*overlap;
-if (learnP) overlap = overlap.*SP.boost; end;
+if (learnP) overlap = overlap.*SP.boost; end
 
 %% inhibit responses -- pick the top k columns
 [v,I] = sort (overlap, 'descend');
@@ -81,6 +81,6 @@ if (learnP)
     SP.synapse = SP.synapse.*SP.connections; % zero out the entries with no synapse connection
     
 
-end;
+end
 active = active';
 

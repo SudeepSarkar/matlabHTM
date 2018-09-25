@@ -30,20 +30,20 @@ N = length(anomalyScores);
 
 mu = zeros(N, 1);
 sigma = zeros(N, 1);
-trN = 1;trN = min (750, round(0.15*N));
+trN = min (750, round(0.15*N));
 
 mu (trN) = anomalyScores(trN); sigma (trN) = 0.0;
-for (k=trN+1:N)
+for k=trN+1:N
     mu (k) = ((k-1-trN)*  mu(k-1) + anomalyScores(k))/(k-trN);
     sigma (k) = sigma (k-1) + (anomalyScores(k) - mu(k))*(anomalyScores(k) - mu(k));
-end;
+end
 sigma = sqrt(sigma./[1:trN,1:N-trN]');
 %% Ignore scores upto this point
 % parameters specified in https://drive.google.com/file/d/0B1_XUjaAXeV3dW1kX1B3VkYwOFE/view
 trN = min (750, round(0.15*N));
 if (labelStart < trN) 
     fprintf(1, '\n Label in probabationary period');
-end;
+end
 
 %% Short term filter (smooth) the raw scores
 % chossing median over mean did not result in better performance
@@ -51,7 +51,7 @@ end;
 filteredScores = zeros (N, 1);
 for (k = shortW+1 : N)
     filteredScores (k) = sum(anomalyScores(k-shortW : k))/shortW;
-end;
+end
 
 
 %% Compute tail anomalyLikelihood

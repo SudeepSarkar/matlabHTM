@@ -1,4 +1,4 @@
-function y = runNAB (startFile, endFile, displayFlag, createModelFlag)
+function runNAB (startFile, endFile, displayFlag, createModelFlag)
 % This function through the entore NAB dataset
 %
 % Copyright (c) 2016,  Sudeep Sarkar, University of South Florida, Tampa, USA
@@ -9,9 +9,9 @@ function y = runNAB (startFile, endFile, displayFlag, createModelFlag)
 % MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 %
 close all;
-if displayFlag, 
+if displayFlag
     figure; h1 = gcf; 
-end;
+end
 
 
 %%Standard application profile: This application profile attributes equal weight across
@@ -60,12 +60,12 @@ close all;
 for i=startFile:endFile
     clear global;
    
-    [~, name, ~] = fileparts(fileNames{i})
+    [~, name, ~] = fileparts(fileNames{i});
     
     %% Create Model
     if createModelFlag
         main  (fileNames{i}, name, displayFlag, true, 'none');
-    end;
+    end
     
     %% Read saved run data --
     % see data field record structure in main.m and other variables stored in the mat file
@@ -106,7 +106,7 @@ for i=startFile:endFile
          %fprintf (1, '\n Likelihood thresh: %4.3f Score -Our: %4.3f  GT: %4.3f  Random: %4.3f Perfect %4.3f Null %4.3f', ...
          %                likelihoodThresh(j), S_A(i, j), numenta_GT(i, j), randomScore(i, j), perfectScore(i, j), nullScore(i, j));
         
-    end;
+    end
     %% Plot
     if displayFlag
 
@@ -121,9 +121,9 @@ for i=startFile:endFile
         %subplot(6,1,6); hold on; plot(detectionsNumenta,'r'); title ('Detections'); hold off; axis('tight');
 
         pause;
-    end;
+    end
     
-end;
+end
 nBoot = 200;
 
 S_A (endFile+1,1:19) = sum(S_A(startFile:endFile,1:19), 1);

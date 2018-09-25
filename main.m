@@ -1,4 +1,4 @@
-function y = main  (inFile, outFile, displayFlag, learnFlag, learntDataFile)
+function main  (inFile, outFile, displayFlag, learnFlag, learntDataFile)
 % This is the main function that (i) sets up the parameters, (ii)
 % initializes the spatial pooler, and (iii) iterates through the data and
 % feed it through the spatial pooler and temporal memory modules.
@@ -40,7 +40,7 @@ if learnFlag
     trN = min (750, round(0.15*data.N));
     for iteration = 1:trN
         x = [];
-        for  i=1:length(data.fields);
+        for  i=1:length(data.fields)
             j = data.fields(i);
             x = [x data.code{j}(data.value{j}(iteration),:)];
         end
@@ -48,16 +48,18 @@ if learnFlag
         
         ri = (xSM* double(SP.synapse > SP.connectPerm)) > 1;
         rError = nnz(x(1:data.nBits(1))) - nnz(ri(1:data.nBits(1)) & x(1:data.nBits(1)));
-        if (rError ~= 0) fprintf(1, '%4.3f ', rError); end;
+        if (rError ~= 0) 
+            fprintf(1, '%4.3f ', rError); 
+        end
     
-    end; 
+    end
     fprintf(1, 'done.');
 else
     %% already learnt spatial pooler and sequence memory is present in learntDataFile
     load (learntDataFile);
     data = encoderNAB (inFile, SP.width);
 
-end;  
+end
   
 
 hold off;
@@ -73,7 +75,7 @@ if displayFlag
     h1 = gcf;
     figure; h2 = gcf;
     figure(h1);
-end;
+end
 fprintf('\n Running input of length %d through sequence memory to detect anomaly...', data.N);
 
 %% Interate
@@ -116,8 +118,8 @@ for iteration = 1:data.N
             predictions(2, iteration) = max(pState);
             predictions(3, iteration) = round(sum(pState.*conf)/sum(conf));
         else predictions([1 2 3], iteration) = 1;
-        end;
-    end;
+        end
+    end
     
     %%
     %anomalyScores (iteration) = compute_active_cells (SM.input); % based on x and PI_1 (prediction from past cycle)
@@ -129,7 +131,7 @@ for iteration = 1:data.N
        markLearnStates ();
        updateSynapses ();
        
-    end;
+    end
     
     %% Temporal Pooling -- remove comments below to invoke temporal pooling.
 %     if (iteration > 150)
@@ -144,7 +146,7 @@ for iteration = 1:data.N
             iteration/data.N, SM.totalDendrites, SM.totalSynapses);
         %imagesc(TP.unionSDRhistory); pause (0.00001);
 
-    end;
+    end
     if (displayFlag)
         fprintf(1, '\n Fraction done: %3.2f Input:%d SM.totalDendrites: %d, SM.totalSynapses: %d, anomalyScore= %4.3f', ...
             iteration/data.N, data.value{1}(iteration), SM.totalDendrites, SM.totalSynapses, ...
@@ -154,8 +156,8 @@ for iteration = 1:data.N
 %             displayCellAnimation;
 %             figure(h1);
             visualizeHTM (iteration, SM.input, data); pause (0.0001);
-        end;
-    end;
+        end
+    end
     
     %% Predict next state
     SM.cellPredictedPrevious = SM.cellPredicted;
@@ -172,7 +174,7 @@ for iteration = 1:data.N
     SM.cellLearnPrevious = SM.cellLearn;
     
     
-end;
+end
 fprintf('\n Running input of length %d through sequence memory to detect anomaly...done', data.N);
 
 %visualizeHTM (iteration, SM.input, data);
@@ -187,7 +189,7 @@ else
     save (sprintf('Output/HTM_SM_%s_L.mat', outFile), ...
         'SM', 'SP', 'data', 'anomalyScores', 'predictions',...
         '-v7.3');
-end;
+end
 
 
 

@@ -1,4 +1,4 @@
-function y = displayCellAnimation ()
+function displayCellAnimation ()
 %% This is just for visualizing the distal dendrite structure as it evolves through the learning phase.
 %
 % Copyright (c) 2016,  Sudeep Sarkar, University of South Florida, Tampa, USA
@@ -49,12 +49,12 @@ yCell = yCell(logical(SM.dendriteActive))/SM.N; xCell = xCell(logical(SM.dendrit
 line ([xDendrite'; xCell'], [yDendrite'; yCell'], 'Marker','.','LineStyle','-', 'color', 'g');
 
 
-[synapse2, ~, cellID] = find(SM.synapseToCell); 
+[~, ~, cellID] = find(SM.synapseToCell); 
 [xCell, yCell] = ind2sub([SM.M, SM.N], cellID);
 %yCell2 = yCell/SM.N; xCell2 = xCell/SM.M; 
 yCell = yCell(SM.synapseActive)/SM.N; xCell = xCell(SM.synapseActive)/SM.M; 
 
-[synapse1, ~, dendrite] = find(SM.synapseToDendrite); 
+[~, ~, dendrite] = find(SM.synapseToDendrite); 
 yDendrite = dendrite(SM.synapseActive)./SM.totalDendrites;
 xDendrite = 1.5 *ones(size(yDendrite));
 %yDendrite2 = dendrite/SM.totalDendrites;

@@ -1,4 +1,4 @@
-function y = markLearnStates ()
+function markLearnStates ()
 % Update the learn states of the cells (one per ACTIVE columns). This is to be run after the active states
 % have been updated (compute_active_states). For those ACTIVE COLUMNS, this code further selects ONE cell
 % per column as the learning cell (learnState). The logic is as follows. If an active cell has a segment that
@@ -46,8 +46,8 @@ if ~isempty(SM.predictedActive)
     
     SM.cellLearn(sub2ind([SM.M, SM.N], R, C)) = true;
 else
-   lc_cols = [] 
-end;
+   lc_cols = [];
+end
 %% find the active columns without a learnCell state set -- activeCols
 %[~, lc_cols]  = find(SM.predictedActiveCells(u));
 [~, x] = setdiff(activeCols, lc_cols);
@@ -61,7 +61,7 @@ cellIDPrevious = find(SM.cellLearnPrevious);
 dCells = zeros(SM.N, 1); nDCells = 0;
 expandDendrites = zeros(SM.N, 1);
 
-for (k=1:n)
+for k=1:n
     % iterate though columns looking for cell to set learnState
     
     j = activeCols(k);
@@ -75,16 +75,16 @@ for (k=1:n)
     % chosen earlier.
     if (updateFlag && (newSynapsesToDendrite < 0)) % i.e. add new dendrite
         xJ = find (cellColPrev == j);
-        if xJ,        
+        if xJ       
             cellChosen = cellIDPrevious(xJ);  
-        end;
-    end;
+        end
+    end
     SM.cellLearn(cellChosen) = 1;
     if (updateFlag)
         nDCells = nDCells + 1;
         dCells (nDCells) = cellChosen;
         expandDendrites (nDCells) = newSynapsesToDendrite;
-    end;
+    end
 end
 
 addDendrites (dCells, expandDendrites, nDCells);
@@ -139,10 +139,10 @@ updateFlag = false;
             if (val < SM.Theta) 
                 addNewSynapsesToDendrite = dendrites(id); 
                 updateFlag = true;
-            end;
-        end;
+            end
+        end
         %fprintf (1, '\n Chosen dendrite %d at %d with %d dendrite strength', dendrites(id), chosenCell, nonzeros(val));
-    end;
+    end
 %end
 
 % if no dendrites of the active cells are above minimum threshold add new
