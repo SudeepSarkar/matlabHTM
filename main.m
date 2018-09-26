@@ -123,15 +123,10 @@ for iteration = 1:data.N
     
     %%
     %anomalyScores (iteration) = compute_active_cells (SM.input); % based on x and PI_1 (prediction from past cycle)
-    markActiveStates (); % based on x and PI_1 (prediction from past cycle)
     
-    %% Learn
     
-    if learnFlag
-       markLearnStates ();
-       updateSynapses ();
-       
-    end
+    sequenceMemory (learnFlag)
+
     
     %% Temporal Pooling -- remove comments below to invoke temporal pooling.
 %     if (iteration > 150)
@@ -158,20 +153,6 @@ for iteration = 1:data.N
             visualizeHTM (iteration, SM.input, data); pause (0.0001);
         end
     end
-    
-    %% Predict next state
-    SM.cellPredictedPrevious = SM.cellPredicted;
-    
-    markPredictiveStates ();
-    
-    %%
-    
-    %%
-    %sum(ismember(find(SM.cellLearn), find(SM.cellActive)))
-
-    SM.cellActivePrevious = SM.cellActive;
-    SM.inputPrevious = SM.input;
-    SM.cellLearnPrevious = SM.cellLearn;
     
     
 end
