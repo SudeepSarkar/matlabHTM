@@ -120,7 +120,6 @@ for i=startFile:endFile
         %subplot(6,1,6); hold on; plot(detections,'b'); title ('Detections'); hold off; axis('tight');
         %subplot(6,1,6); hold on; plot(detectionsNumenta,'r'); title ('Detections'); hold off; axis('tight');
 
-        pause;
     end
     
 end

@@ -76,7 +76,7 @@ for k=1:n
     if (updateFlag && (newSynapsesToDendrite < 0)) % i.e. add new dendrite
         xJ = find (cellColPrev == j);
         if xJ       
-            cellChosen = cellIDPrevious(xJ);  
+            cellChosen = cellIDPrevious(xJ(1));  % pick only one, if multiple
         end
     end
     SM.cellLearn(cellChosen) = 1;

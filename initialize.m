@@ -28,7 +28,7 @@ global  SM SP TP data
     SP.synPermInactiveDec = 0.0005; % Decrement of permanence for inactive synapse
     SP.stimulusThreshold = 2; % Background noise level from the encoder. Usually set to very low value.
     SP.activeSparse = 0.02; % sparsity of the representation
-    SP.maxBoost = 1; %10;
+    SP.maxBoost = 1; %10
     
         
   

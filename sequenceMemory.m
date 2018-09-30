@@ -1,6 +1,6 @@
 function sequenceMemory (learnFlag)
 
-global  SP SM TP data anomalyScores iteration predictions
+global  SM 
 
     markActiveStates (); % based on x and PI_1 (prediction from past cycle)
     
@@ -10,13 +10,8 @@ global  SP SM TP data anomalyScores iteration predictions
     end
 
     % Predict next state
-    SM.cellPredictedPrevious = SM.cellPredicted;
-    
+    SM.cellPredictedPrevious = SM.cellPredicted;   
     markPredictiveStates ();
-   
-    SM.cellActivePrevious = SM.cellActive;
-    SM.inputPrevious = SM.input;
-    SM.cellLearnPrevious = SM.cellLearn;
    
 end
 

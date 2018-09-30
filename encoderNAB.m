@@ -1,7 +1,30 @@
 function data = encoderNAB (filename, width)
 % Encodes the data in the input csv file provided in the Numenta Anomaly
-% Database in terms of binary semantic representations.
+% Database, in the file -- filename, in terms of binary semantic
+% representations. 
+% 
+% width: number of bits of overlap between semantically consecutive
+% representation, i.e. between say the numbers 3 and 4.
 %
+% Output: data with following fields
+% data.name -- list of field names - subset of 'data_value', 'month', 'day_of_week','time_of_day', 'weeeknd'
+% data.fields -- array of values identifying the fields in the
+%                representation 1-'data_value', 2-'month', 3-'day_of_week',
+%                4-'time_of_day', 5-'weeeknd' 
+% data.buckets -- number of possible values (alphabets) for each of the fields
+% data.value -- quantized values of the input sequence in terms of the buckets
+% data.code -- binary code for the quantized values. 
+% data.width -- number of bits of overlap between semantically consecutive
+%               values
+% data.circularP -- indicates if the field is circular, like time of the day 
+% data.shift -- shifts between consecutive values of a feild, i.e. between
+%               representation of numbers 2 and 3, for example.
+% data.N -- number of data elements
+% data.nBits -- number of bits representing each field. 
+%
+% data.numentaAnomalyScore 
+% data.numentaRawAnomalyScore 
+
 % Copyright (c) 2016,  Sudeep Sarkar, University of South Florida, Tampa, USA
 % This work is licensed under the Attribution-NonCommercial-ShareAlike 4.0 International License. 
 % To view a copy of this license, visit https://creativecommons.org/licenses/by-nc-sa/4.0/
