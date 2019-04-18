@@ -37,7 +37,7 @@ activeCols = find(SM.input);
 [xL, ~, ~] = find(SM.dendriteLearn); % active learning dendrites
 uL = unique(SM.dendriteToCell(xL)); % marks cells with active learning dendrites
 if ~isempty(SM.predictedActive)
-    lc_cols = find(SM.predictedActive (uL));
+    lc_cols = uL(SM.predictedActive (uL));
     [R, C] = ind2sub ([SM.M, SM.N], lc_cols);
     % u = ismember (SM.predictedActiveCells, uL); % which of the active cells are connected to learning dendrites
     % [R, C] = ind2sub ([SM.M, SM.N], SM.predictedActiveCells(u));
