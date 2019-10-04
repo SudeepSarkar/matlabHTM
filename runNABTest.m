@@ -1,4 +1,7 @@
-function runNAB (startFile, endFile, displayFlag, createModelFlag)
+startFile = 1;
+endFile = 2;
+displayFlag = false;
+createModelFlag = true;
 time = datetime;
 % This function through the entore NAB dataset
 %
@@ -56,7 +59,7 @@ while ~feof(fid)
     fscanf(fid, '%d ', 1); % skip the line count in the first column
     fileNames{i} = fscanf(fid, '%s ', 1);
     i = i+1;
-end;
+end
 fclose (fid);
 fprintf(1, '\n %d files to process in total', i);
 close all;
@@ -185,7 +188,5 @@ fprintf (1, '\n Our Raw Scores + Our Anomaly Likelihood: %4.3f (Bootstrap estima
 %     fprintf(1, '\n%s', fileNames{i(j)});
 % end
 matlabHTM_timing_dataset(i+1) = diff([time datetime]);
-save (sprintf('time_HTM.mat'),'matlabHTM_timing_dataset','-append');
+save (sprintf('time_HTM.mat'),'matlabHTM_timing_dataset',"-append");
 fprintf ('\nTotal Processing Time is: %s\n',matlabHTM_timing_dataset(i+1));
-
-exit

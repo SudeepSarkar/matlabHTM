@@ -93,7 +93,7 @@ SP.boost = ones (SM.N, 1);
 fprintf('\n Running input of length %d through sequence memory to detect anomaly...', data.N);
 
 %% Iterate through the input data and feed through the spatial pooler, sequence memory and temporal pooler, as needed.
-
+time_per_dataset = datetime;
 for iteration = 1:data.N
     %% Run through Spatial Pooler (SP)(without learning)    
     x = [];
@@ -164,6 +164,22 @@ for iteration = 1:data.N
     SM.cellLearnPrevious = SM.cellLearn;
     
 end
+
+load time_HTM.mat;
+
+if (htm_time_notrn == 0)
+    htm_time_notrn = diff([time_per_dataset datetime]);
+    save (sprintf('time_HTM.mat'),'htm_time_notrn');
+else
+    htm_time_notrn(size(htm_time_notrn,2)+1) = diff([time_per_dataset datetime]);
+    fprintf ('\nThe processing Time withoug trainig is: %s\n',htm_time_notrn(size(htm_time_notrn,2)));
+    save (sprintf('time_HTM.mat'),'htm_time_notrn','-append');
+end
+
+% matlabHTM_no_trn_timing(i) = diff([time_per_dataset datetime]);
+%fprintf ('\nThe processing Time withoug trainig is: %s\n',matlabHTM_no_trn_timing(i));
+%save (sprintf('time_HTM.mat'),'matlabHTM_no_trn_timing','-append');
+
 fprintf('\n Running input of length %d through sequence memory to detect anomaly...done', data.N);
 
 % Uncomment this if you want to visualize Temporal Pooler output
