@@ -28,7 +28,11 @@ if learnFlag
   %% Encode Input into Binary Semantic Representation 
 
    SP.width = 21; %21; % number of bits that are one for each state in the input.
-   data = encoderNAB (inFile, SP.width);
+   if inFile(1:strfind(inFile,'/')-1) == "Pseudo_periodic_synthetic"
+       data = encoderNAB_synthetic (inFile, SP.width);
+   else
+       data = encoderNAB (inFile, SP.width);
+   end
   
     
    %% initialize parameters and data structures for spatial pooler (SP), 
@@ -165,20 +169,9 @@ for iteration = 1:data.N
     
 end
 
-load time_HTM.mat;
-
-if (htm_time_notrn == 0)
-    htm_time_notrn = diff([time_per_dataset datetime]);
-    save (sprintf('time_HTM.mat'),'htm_time_notrn');
-else
-    htm_time_notrn(size(htm_time_notrn,2)+1) = diff([time_per_dataset datetime]);
-    fprintf ('\nThe processing Time withoug trainig is: %s\n',htm_time_notrn(size(htm_time_notrn,2)));
-    save (sprintf('time_HTM.mat'),'htm_time_notrn','-append');
-end
-
-% matlabHTM_no_trn_timing(i) = diff([time_per_dataset datetime]);
-%fprintf ('\nThe processing Time withoug trainig is: %s\n',matlabHTM_no_trn_timing(i));
-%save (sprintf('time_HTM.mat'),'matlabHTM_no_trn_timing','-append');
+htm_time_notrn = diff([time_per_dataset datetime]);
+fprintf ('\nThe processing Time withoug trainig is: %s\n',htm_time_notrn);
+save (sprintf('Output/time_HTM_%s.mat',inFile(strfind(inFile,'/')+1:strfind(inFile,'.')-1)),'htm_time_notrn');
 
 fprintf('\n Running input of length %d through sequence memory to detect anomaly...done', data.N);
 
