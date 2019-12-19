@@ -68,23 +68,8 @@ for i=startFile:endFile
     %% detect anomaly likelihood
     % shortW (one of the parameters) = 30, 20, 10, 5 -- 
     if fileNames{i}(1:strfind(fileNames{i},'/')-1) == "Pseudo_periodic_synthetic"
-        size_dataset = data.N;
-        mean_prediction = 100*(1-mean(anomalyScores));
-        full_predictions = sum(anomalyScores==0);
-        predictions_90 = sum(anomalyScores<0.1);
-        predictions_50 = sum(anomalyScores<0.5);
-        some_prediction = sum(anomalyScores~=1);
-
-%         fprintf("\nThe amount of events is <strong> %d </strong>",size_dataset);
-%         fprintf("\nThe avegae of prediction is <strong> %.2f </strong>",mean_prediction);
-%         fprintf("\nThe amount of fully predicted events <strong> %d </strong>",full_predictions);
-%         fprintf("\nEvents predicted at 90%% <strong> %d </strong>",predictions_90);
-%         fprintf("\nEvents predicted at 50%% <strong> %d </strong>",predictions_50);
-%         fprintf("\nEvents with any prediction <strong> %d </strong>\n",some_prediction);
-
-        save (sprintf('Output/time_HTM_%s.mat',fileNames{1}(strfind(fileNames{1},'/')+1:strfind(fileNames{1},'.')-1)),...
-            'size_dataset','mean_prediction','full_predictions','predictions_90',...
-            'predictions_50','some_prediction','-append');
+        save (sprintf('Output/time_SMRM_%s.mat',fileNames{1}(strfind(fileNames{1},'/')+1:strfind(fileNames{1},'.')-1)),...
+            'anomalyScores','-append');
     else
        ourAnomalyLikelihoodNumenta = sequentialAnomalyDectection (data.numentaRawAnomalyScore, 13, displayFlag, find(data.labels, 1));
        anomalyLikelihoodNumenta = data.numentaAnomalyScore; 

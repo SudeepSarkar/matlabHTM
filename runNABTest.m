@@ -155,8 +155,7 @@ for i=startFile:endFile
     %     
 end
 % 
-% 
-% %% [ToDo: place bootstrapping in another file]
+%
 % 
 % if fileNames{i}(1:strfind(fileNames{i},'/')-1) == "Pseudo_periodic_synthetic"
 %    
