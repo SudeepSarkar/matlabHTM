@@ -66,11 +66,10 @@ for i=startFile:endFile
     load (sprintf('Output/HTM_SM_%s.mat', name));
 
     %% detect anomaly likelihood
-    % shortW (one of the parameters) = 30, 20, 10, 5 -- 
-    if fileNames{i}(1:strfind(fileNames{i},'/')-1) == "Pseudo_periodic_synthetic"
-        save (sprintf('Output/time_SMRM_%s.mat',fileNames{1}(strfind(fileNames{1},'/')+1:strfind(fileNames{1},'.')-1)),...
-            'anomalyScores','-append');
-    else
+    % shortW (one of the parameters) = 30, 20, 10, 5 --
+    underscore_locations = strfind(fileNames{i},'_');
+
+    if fileNames{i}(underscore_locations(1)+1:underscore_locations(2)-1) == "numentaTM"
        ourAnomalyLikelihoodNumenta = sequentialAnomalyDectection (data.numentaRawAnomalyScore, 13, displayFlag, find(data.labels, 1));
        anomalyLikelihoodNumenta = data.numentaAnomalyScore; 
        anomalyLikelihood = sequentialAnomalyDectection (anomalyScores, 9, displayFlag, find(data.labels, 1));
@@ -117,6 +116,9 @@ for i=startFile:endFile
             %subplot(6,1,6); hold on; plot(detectionsNumenta,'r'); title ('Detections'); hold off; axis('tight');
 
         end
+    else
+       save (sprintf('Output/time_SMRM_%s.mat',fileNames{i}(strfind(fileNames{i},'/')+1:strfind(fileNames{i},'.')-1)),...
+       'anomalyScores','-append');
     end
    
 end
@@ -124,9 +126,7 @@ end
 
 %% [ToDo: place bootstrapping in another file]
 
-if fileNames{i}(1:strfind(fileNames{i},'/')-1) == "Pseudo_periodic_synthetic"
-   
-else
+if fileNames{i}(underscore_locations(1)+1:underscore_locations(2)-1) == "numentaTM"
     nBoot = 200;
 
     S_A (endFile+1,1:19) = sum(S_A(startFile:endFile,1:19), 1);
@@ -182,7 +182,9 @@ else
     % 
     % for j=1:length(i)
     %     fprintf(1, '\n%s', fileNames{i(j)});
-    % end
+    % end  
+else
+
 end
 
 exit

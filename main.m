@@ -28,11 +28,7 @@ if learnFlag
   %% Encode Input into Binary Semantic Representation 
 
    SP.width = 21; %21; % number of bits that are one for each state in the input.
-   if inFile(1:strfind(inFile,'/')-1) == "Pseudo_periodic_synthetic"
-       data = encoderNAB_synthetic (inFile, SP.width);
-   else
-       data = encoderNAB (inFile, SP.width);
-   end
+   data = encoderNAB (inFile, SP.width);
   
     
    %% initialize parameters and data structures for spatial pooler (SP), 
@@ -171,7 +167,8 @@ end
 
 htm_time_notrn = diff([time_per_dataset datetime]);
 fprintf ('\nThe processing Time withoug trainig is: %s\n',htm_time_notrn);
-save (sprintf('Output/time_HTM_%s.mat',inFile(strfind(inFile,'/')+1:strfind(inFile,'.')-1)),'htm_time_notrn');
+save (sprintf('Output/time_HTM_%s.mat',inFile(strfind(inFile,'/')+1:strfind(inFile,'.')-1)),'htm_time_notrn',...
+    'anomalyScores');
 
 fprintf('\n Running input of length %d through sequence memory to detect anomaly...done', data.N);
 
