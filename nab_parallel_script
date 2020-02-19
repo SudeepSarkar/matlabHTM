@@ -1,6 +1,6 @@
 #!/bin/bash
 #SBATCH --partition=bgfsqdr
-#SBATCH --job-name=NAB_SM_12
+#SBATCH --job-name=NAB_SM_6
 #SBATCH --time=20:00:00
 #SBATCH --output=Output/matlabHTM.%j
 #SBATCH --ntasks=8
