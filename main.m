@@ -94,6 +94,7 @@ fprintf('\n Running input of length %d through sequence memory to detect anomaly
 
 %% Iterate through the input data and feed through the spatial pooler, sequence memory and temporal pooler, as needed.
 time_per_dataset = datetime;
+SM.time = zeros(1,data.N);
 for iteration = 1:data.N
     %% Run through Spatial Pooler (SP)(without learning)    
     x = [];
@@ -117,12 +118,14 @@ for iteration = 1:data.N
     % predicted signal, but it did not work well.
     
     pi = logical(sum(SM.cellPredicted));
-  
+    SM.every_prediction(iteration,:) = pi;
     anomalyScores (iteration) = 1 - nnz(pi & SM.input)/nnz(SM.input);
     
     %% Run the input through Sequence Memory (SM) module to compute the active
     % cells in SM and also the predictions for the next time instant.
+    %tic;
     sequenceMemory (learnFlag);
+    %SM.time(iteration) = toc;
 
     %% Temporal Pooling (TP) -- remove comments below to invoke temporal pooling.
     %     if (iteration > 150)

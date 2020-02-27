@@ -77,3 +77,4 @@
 4054 datasets/monthly_vix_open.csv
 5803 datasets/daily_natural_gas.csv
 8304 datasets/daily_oil_prices.csv
+4054 datasets/value1_vix_open.csv

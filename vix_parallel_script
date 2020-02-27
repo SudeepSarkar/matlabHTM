@@ -1,6 +1,6 @@
 #!/bin/bash
 #SBATCH --partition=bgfsqdr
-#SBATCH --job-name=VIX_SM_3
+#SBATCH --job-name=VIX_SM_1
 #SBATCH --time=00:15:00
 #SBATCH --output=Output/matlabHTMRM.%j
 #SBATCH --ntasks=8
