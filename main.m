@@ -93,7 +93,7 @@ SP.boost = ones (SM.N, 1);
 fprintf('\n Running input of length %d through sequence memory to detect anomaly...', data.N);
 
 %% Iterate through the input data and feed through the spatial pooler, sequence memory and temporal pooler, as needed.
-time_per_dataset = datetime;
+tic;
 SM.time = zeros(1,data.N);
 for iteration = 1:data.N
     %% Run through Spatial Pooler (SP)(without learning)    
@@ -168,7 +168,7 @@ for iteration = 1:data.N
     
 end
 
-htm_time_notrn = diff([time_per_dataset datetime]);
+htm_time_notrn = toc;
 fprintf ('\nThe processing Time withoug trainig is: %s\n',htm_time_notrn);
 save (sprintf('Output/time_HTM_%s.mat',inFile(strfind(inFile,'/')+1:strfind(inFile,'.')-1)),'htm_time_notrn',...
     'anomalyScores');
