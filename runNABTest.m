@@ -2,7 +2,6 @@ startFile = 1;
 endFile = 1;
 displayFlag = false;
 createModelFlag = true;
-time = datetime;
 % This function through the entore NAB dataset
 %
 % Copyright (c) 2016,  Sudeep Sarkar, University of South Florida, Tampa, USA
@@ -43,5 +42,5 @@ for i=startFile:endFile
     matlabHTM_timing_dataset = toc;
     fprintf ('\nProcessing Time is: %s\n',matlabHTM_timing_dataset);
     save (sprintf('Output/time_HTM_%s.mat',name),'matlabHTM_timing_dataset','-append');
-
+    fprintf ('\n%d:iteration_finished_properly,%d\n',i);
 end
