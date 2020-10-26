@@ -4,7 +4,8 @@
 #SBATCH --time=3:00:00
 #SBATCH --output=Output/matlabHTM.%j
 #SBATCH --ntasks=1
-#SBATCH --mem=16384
+#SBATCH --cores-per-socket=2
+#SBATCH --mem=8192
 
 module load apps/matlab/r2019a
 
