@@ -1,5 +1,5 @@
-startFile = 1;
-endFile = 1;
+startFile = 11;
+endFile = 58;
 displayFlag = false;
 createModelFlag = true;
 % This function through the entore NAB dataset

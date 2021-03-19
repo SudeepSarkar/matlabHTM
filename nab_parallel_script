@@ -1,11 +1,11 @@
 #!/bin/bash
 #SBATCH --partition=bgfsqdr
 #SBATCH --job-name=NAB_SM
-#SBATCH --time=3:00:00
+#SBATCH --time=2:00:00
 #SBATCH --output=Output/matlabHTM.%j
 #SBATCH --ntasks=1
-#SBATCH --cores-per-socket=2
-#SBATCH --mem=8192
+#SBATCH --cores-per-socket=8
+#SBATCH --mem=16384
 
 module load apps/matlab/r2019a
 
