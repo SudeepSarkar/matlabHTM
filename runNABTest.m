@@ -1,10 +1,5 @@
-<<<<<<< HEAD
 startFile = 1;
 endFile = 2;
-=======
-startFile = 11;
-endFile = 58;
->>>>>>> 1976cb23c19542909c284ea599f27c2d2168551b
 displayFlag = false;
 createModelFlag = true;
 % This function through the entore NAB dataset
