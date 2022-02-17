@@ -168,9 +168,11 @@ for iteration = 1:data.N
 end
 
 htm_time_notrn = toc(htm_time_notrn_starts);
+prediction_2_SDR_comparison = SM.prediction_2_SDR_comparison;
+prediction_process = SM.prediction_process;
 fprintf ('\nThe processing Time withoug trainig is: %s\n',htm_time_notrn);
 save (sprintf('Output/time_HTM_%s.mat',inFile(strfind(inFile,'/')+1:strfind(inFile,'.')-1)),'htm_time_notrn',...
-    'anomalyScores');
+    'anomalyScores','prediction_2_SDR_comparison',"prediction_process");
 
 fprintf('\n Running input of length %d through sequence memory to detect anomaly...done', data.N);
 

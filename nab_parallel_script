@@ -1,5 +1,5 @@
 #!/bin/bash
-#SBATCH --partition=bgfsqdr
+#SBATCH --partition=circe
 #SBATCH --job-name=NAB_SM
 #SBATCH --time=2:00:00
 #SBATCH --output=Output/matlabHTM.%j
