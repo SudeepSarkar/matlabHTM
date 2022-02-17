@@ -93,12 +93,15 @@ SP.boost = ones (SM.N, 1);
 fprintf('\n Running input of length %d through sequence memory to detect anomaly...', data.N);
 
 %% Iterate through the input data and feed through the spatial pooler, sequence memory and temporal pooler, as needed.
-tic;
-SM.time = zeros(1,data.N);
+htm_time_notrn_tic = tic;
+%SM.time = zeros(1,data.N);
+SM.prediction_process = zeros(1,data.N);
+SM.prediction_2_SDR_comparison_tic = zeros(1,data.N);
+
 for iteration = 1:data.N
     %% Run through Spatial Pooler (SP)(without learning)    
     x = [];
-    for  i=1:length(data.fields);
+    for  i=1:length(data.fields)
         j = data.fields(i);
         x = [x data.code{j}(data.value{j}(iteration),:)];
     end
@@ -117,7 +120,9 @@ for iteration = 1:data.N
     % defining anomaly based on reconstructed spatial pooler input
     % predicted signal, but it did not work well.
     
+    prediction_2_SDR_comparison_tic = tic;
     pi = logical(sum(SM.cellPredicted));
+    SM.prediction_2_SDR_comparison_tic = toc(prediction_2_SDR_comparison_tic);
     SM.every_prediction(iteration,:) = pi;
     anomalyScores (iteration) = 1 - nnz(pi & SM.input)/nnz(SM.input);
     
@@ -168,7 +173,7 @@ for iteration = 1:data.N
     
 end
 
-htm_time_notrn = toc;
+htm_time_notrn = toc(htm_time_notrn_tic);
 fprintf ('\nThe processing Time withoug trainig is: %s\n',htm_time_notrn);
 save (sprintf('Output/time_HTM_%s.mat',inFile(strfind(inFile,'/')+1:strfind(inFile,'.')-1)),'htm_time_notrn',...
     'anomalyScores');

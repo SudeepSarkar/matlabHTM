@@ -1,5 +1,5 @@
 startFile = 1;
-endFile = 1;
+endFile = 2;
 displayFlag = false;
 createModelFlag = true;
 % This function through the entore NAB dataset
@@ -27,9 +27,9 @@ for i=startFile:endFile
     close all;
     clear global;
 
-    tic;
     [~, name, ~] = fileparts(file_name);
 
+    matlabHTM_timing_dataset_tic = tic;
     %% Create Model
     if createModelFlag
         main  (file_name, name, displayFlag, true, 'none');
@@ -39,7 +39,7 @@ for i=startFile:endFile
     % see data field record structure in main.m and other variables stored in the mat file
 
     %% Moved to bootsraping
-    matlabHTM_timing_dataset = toc;
+    matlabHTM_timing_dataset = toc(matlabHTM_timing_dataset_tic);
     fprintf ('\nProcessing Time is: %s\n',matlabHTM_timing_dataset);
     save (sprintf('Output/time_HTM_%s.mat',name),'matlabHTM_timing_dataset','-append');
     fprintf ('\n%d:iteration_finished_properly,%d\n',i);

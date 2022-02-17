@@ -37,7 +37,7 @@ SM.dendriteLearn (:) = 0;
 % could be potentially active had their (positive) permanence been higher.
 
 % synapse is an index of the synapses along with corresponding cell body it is connected to in cellID
-
+prediction_process = tic;
 [synapse, ~, cellID] = find(SM.synapseToCell);
 
 % x is a vector of (linear) indices of active cells - note cellID contains the indices of the cells corresponding to 
@@ -105,6 +105,7 @@ SM.cellPredicted (:)= 0;
 [x, ~, ~] = find(SM.dendriteActive); % active dendrites
 u = unique(SM.dendriteToCell(x));
 SM.cellPredicted (u) = true;
+SM.prediction_process = toc(prediction_process);
 
 
 

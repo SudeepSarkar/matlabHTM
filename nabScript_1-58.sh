@@ -6,7 +6,7 @@
 #SBATCH --ntasks=4
 #SBATCH --mem=8192
 
-module load apps/matlab/r2019a
+module load apps/matlab/r2020b
 
 date
 

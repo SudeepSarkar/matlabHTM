@@ -24,15 +24,16 @@ for i=startFile:endFile
     close all;
     clear global;
 
-    tic;
+
     [~, name, ~] = fileparts(file_name);
 
+    matlabHTM_timing_dataset_tic = tic;
     %% Create Model
     if createModelFlag
         main  (file_name, name, displayFlag, true, 'none');
     end
 
-    matlabHTM_timing_dataset = toc;
+    matlabHTM_timing_dataset = toc(matlabHTM_timing_dataset_tic);
     fprintf ('\nProcessing Time is: %s\n',matlabHTM_timing_dataset);
     save (sprintf('Output/time_HTM_%s.mat',name),'matlabHTM_timing_dataset','-append');
     fprintf ('\n%d:iteration_finished_properly,%d\n',i);
