@@ -13,7 +13,7 @@ if displayFlag
     figure; h1 = gcf; 
 end
 
-%% Sequences are being done in parallel now
+%% Sequences in parallel now
 for i=startFile:endFile
     
     fid = fopen('fileList.txt', 'r');
@@ -24,7 +24,11 @@ for i=startFile:endFile
     close all;
     clear global;
 
+<<<<<<< HEAD
 
+=======
+    timing_starts = tic;
+>>>>>>> 1976cb23c19542909c284ea599f27c2d2168551b
     [~, name, ~] = fileparts(file_name);
 
     matlabHTM_timing_dataset_tic = tic;
@@ -33,7 +37,12 @@ for i=startFile:endFile
         main  (file_name, name, displayFlag, true, 'none');
     end
 
+<<<<<<< HEAD
     matlabHTM_timing_dataset = toc(matlabHTM_timing_dataset_tic);
+=======
+    %% Time to process
+    matlabHTM_timing_dataset = toc(timing_starts);
+>>>>>>> 1976cb23c19542909c284ea599f27c2d2168551b
     fprintf ('\nProcessing Time is: %s\n',matlabHTM_timing_dataset);
     save (sprintf('Output/time_HTM_%s.mat',name),'matlabHTM_timing_dataset','-append');
     fprintf ('\n%d:iteration_finished_properly,%d\n',i);

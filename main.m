@@ -23,13 +23,11 @@ function main  (inFile, outFile, displayFlag, learnFlag, learntDataFile)
 
 global  SP SM TP data anomalyScores predictions
 
-
 if learnFlag
   %% Encode Input into Binary Semantic Representation 
 
    SP.width = 21; %21; % number of bits that are one for each state in the input.
    data = encoderNAB (inFile, SP.width);
-  
     
    %% initialize parameters and data structures for spatial pooler (SP), 
    % sequence memory (SM), and temporal pooler (TP). 
@@ -74,30 +72,30 @@ if displayFlag
    % h2 = figure; set(h2, 'Position', [1000, 10000, 700, 1000]);
     
    h = figure; set(h, 'Position', [10, 10000, 1400, 1000]);
-   subplot(3,2,1);
-   
-    
+   subplot(3,2,1);    
 end
 
 
 %% Setup arrays
 predictions = zeros(3, data.N); % initialize array allocaton -- faster on matlab
+anomalyScores = ones(1,data.N);
 SM.inputPrevious = zeros(SM.N, 1);
 data.inputCodes = [];
 data.inputSDR = [];
 SP.boost = ones (SM.N, 1); 
-% no boosting in spatial pooler as it is being run in a non-learning mode
-% next. 
-
+htm_time_notrn_starts = tic;
+SM.time = zeros(1,data.N);
 
 fprintf('\n Running input of length %d through sequence memory to detect anomaly...', data.N);
-
 %% Iterate through the input data and feed through the spatial pooler, sequence memory and temporal pooler, as needed.
+<<<<<<< HEAD
 htm_time_notrn_tic = tic;
 %SM.time = zeros(1,data.N);
 SM.prediction_process = zeros(1,data.N);
 SM.prediction_2_SDR_comparison_tic = zeros(1,data.N);
 
+=======
+>>>>>>> 1976cb23c19542909c284ea599f27c2d2168551b
 for iteration = 1:data.N
     %% Run through Spatial Pooler (SP)(without learning)    
     x = [];
@@ -173,7 +171,11 @@ for iteration = 1:data.N
     
 end
 
+<<<<<<< HEAD
 htm_time_notrn = toc(htm_time_notrn_tic);
+=======
+htm_time_notrn = toc(htm_time_notrn_starts);
+>>>>>>> 1976cb23c19542909c284ea599f27c2d2168551b
 fprintf ('\nThe processing Time withoug trainig is: %s\n',htm_time_notrn);
 save (sprintf('Output/time_HTM_%s.mat',inFile(strfind(inFile,'/')+1:strfind(inFile,'.')-1)),'htm_time_notrn',...
     'anomalyScores');
