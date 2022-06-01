@@ -40,7 +40,7 @@ end
 sigma = sqrt(sigma./[1:trN,1:N-trN]');
 %% Ignore scores upto this point
 % parameters specified in https://drive.google.com/file/d/0B1_XUjaAXeV3dW1kX1B3VkYwOFE/view
-trN = min (750, round(0.15*N));
+%trN = min (750, round(0.15*N));
 if (labelStart < trN) 
     fprintf(1, '\n Label in probabationary period');
 end

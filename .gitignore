@@ -1,0 +1,10 @@
+#ignore Output directory
+Output
+
+#ignore Peak_detection directory
+Peak_detection
+
+#ignore moving_date directory
+moving_data
+ 
+

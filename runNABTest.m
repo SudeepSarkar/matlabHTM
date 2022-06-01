@@ -1,4 +1,7 @@
-function runNAB (startFile, endFile, displayFlag, createModelFlag)
+startFile = 1;
+endFile = 2;
+displayFlag = false;
+createModelFlag = true;
 % This function through the entore NAB dataset
 %
 % Copyright (c) 2016,  Sudeep Sarkar, University of South Florida, Tampa, USA
@@ -13,7 +16,7 @@ if displayFlag
     figure; h1 = gcf; 
 end
 
-%% Sequences in parallel now
+%% Sequences are being done in parallel now
 for i=startFile:endFile
     
     fid = fopen('fileList.txt', 'r');
@@ -26,16 +29,18 @@ for i=startFile:endFile
 
     [~, name, ~] = fileparts(file_name);
 
-    timing_starts = tic;
+    matlabHTM_timing_dataset_tic = tic;
     %% Create Model
     if createModelFlag
         main  (file_name, name, displayFlag, true, 'none');
     end
 
-    %% Time to process
-    matlabHTM_timing_dataset = toc(timing_starts);
+    %% Read saved run data --
+    % see data field record structure in main.m and other variables stored in the mat file
+
+    %% Moved to bootsraping
+    matlabHTM_timing_dataset = toc(matlabHTM_timing_dataset_tic);
     fprintf ('\nProcessing Time is: %s\n',matlabHTM_timing_dataset);
     save (sprintf('Output/time_HTM_%s.mat',name),'matlabHTM_timing_dataset','-append');
     fprintf ('\n%d:iteration_finished_properly,%d\n',i);
 end
-exit

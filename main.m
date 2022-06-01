@@ -23,13 +23,11 @@ function main  (inFile, outFile, displayFlag, learnFlag, learntDataFile)
 
 global  SP SM TP data anomalyScores predictions
 
-
 if learnFlag
   %% Encode Input into Binary Semantic Representation 
 
    SP.width = 21; %21; % number of bits that are one for each state in the input.
    data = encoderNAB (inFile, SP.width);
-  
     
    %% initialize parameters and data structures for spatial pooler (SP), 
    % sequence memory (SM), and temporal pooler (TP). 
@@ -74,30 +72,30 @@ if displayFlag
    % h2 = figure; set(h2, 'Position', [1000, 10000, 700, 1000]);
     
    h = figure; set(h, 'Position', [10, 10000, 1400, 1000]);
-   subplot(3,2,1);
-   
-    
+   subplot(3,2,1);    
 end
 
 
 %% Setup arrays
 predictions = zeros(3, data.N); % initialize array allocaton -- faster on matlab
+anomalyScores = ones(1,data.N);
 SM.inputPrevious = zeros(SM.N, 1);
 data.inputCodes = [];
 data.inputSDR = [];
 SP.boost = ones (SM.N, 1); 
-% no boosting in spatial pooler as it is being run in a non-learning mode
-% next. 
-
+htm_time_notrn_starts = tic;
+SM.time = zeros(1,data.N);
 
 fprintf('\n Running input of length %d through sequence memory to detect anomaly...', data.N);
-
 %% Iterate through the input data and feed through the spatial pooler, sequence memory and temporal pooler, as needed.
+%SM.time = zeros(1,data.N);
+SM.prediction_process = zeros(1,data.N);
+SM.prediction_2_SDR_comparison = zeros(1,data.N);
 
 for iteration = 1:data.N
     %% Run through Spatial Pooler (SP)(without learning)    
     x = [];
-    for  i=1:length(data.fields);
+    for  i=1:length(data.fields)
         j = data.fields(i);
         x = [x data.code{j}(data.value{j}(iteration),:)];
     end
@@ -116,13 +114,17 @@ for iteration = 1:data.N
     % defining anomaly based on reconstructed spatial pooler input
     % predicted signal, but it did not work well.
     
+    prediction_2_SDR_comparison_tic = tic;
     pi = logical(sum(SM.cellPredicted));
-  
+    SM.prediction_2_SDR_comparison = toc(prediction_2_SDR_comparison_tic);
+    SM.every_prediction(iteration,:) = pi;
     anomalyScores (iteration) = 1 - nnz(pi & SM.input)/nnz(SM.input);
     
     %% Run the input through Sequence Memory (SM) module to compute the active
     % cells in SM and also the predictions for the next time instant.
+    %tic;
     sequenceMemory (learnFlag);
+    %SM.time(iteration) = toc;
 
     %% Temporal Pooling (TP) -- remove comments below to invoke temporal pooling.
     %     if (iteration > 150)
@@ -164,6 +166,14 @@ for iteration = 1:data.N
     SM.cellLearnPrevious = SM.cellLearn;
     
 end
+
+htm_time_notrn = toc(htm_time_notrn_starts);
+prediction_2_SDR_comparison = SM.prediction_2_SDR_comparison;
+prediction_process = SM.prediction_process;
+fprintf ('\nThe processing Time withoug trainig is: %s\n',htm_time_notrn);
+save (sprintf('Output/time_HTM_%s.mat',inFile(strfind(inFile,'/')+1:strfind(inFile,'.')-1)),'htm_time_notrn',...
+    'anomalyScores','prediction_2_SDR_comparison',"prediction_process");
+
 fprintf('\n Running input of length %d through sequence memory to detect anomaly...done', data.N);
 
 % Uncomment this if you want to visualize Temporal Pooler output

@@ -5,17 +5,13 @@ do
 
 done    
             
-
-
-nice -n 10 matlab -nodisplay -nosplash -nodesktop -r "run('runNAB(1,18,false,true)')"  &
-nice -n 10 matlab -nodisplay -nosplash -nodesktop -r "run('runNAB(19,28,false,true)')"  &
-nice -n 10 matlab -nodisplay -nosplash -nodesktop -r "run('runNAB(29,38,false,true)')"  &
-
-nice -n 10 matlab -nodisplay -nosplash -nodesktop -r "run('runNAB(39,46,false,true)')"  &
-nice -n 10 matlab -nodisplay -nosplash -nodesktop -r "run('runNAB(47,49,false,true)')" &
-
-nice -n 10 matlab -nodisplay -nosplash -nodesktop -r "run('runNAB(50,52,false,true)')"  &
-nice -n 10 matlab -nodisplay -nosplash -nodesktop -r "run('runNAB(53,55,false,true)')" &
-nice -n 10 matlab -nodisplay -nosplash -nodesktop -r "run('runNAB(56,58,false,true)')" &
+nice -n 10 matlab -nodisplay -nosplash -nodesktop -r "run('runNAB(1,18,true,true)')"  &
+nice -n 10 matlab -nodisplay -nosplash -nodesktop -r "run('runNAB(19,28,true,true)')" &
+nice -n 10 matlab -nodisplay -nosplash -nodesktop -r "run('runNAB(29,38,true,true)')" &
+nice -n 10 matlab -nodisplay -nosplash -nodesktop -r "run('runNAB(39,46,true,true)')" &
+nice -n 10 matlab -nodisplay -nosplash -nodesktop -r "run('runNAB(47,49,true,true)')" &
+nice -n 10 matlab -nodisplay -nosplash -nodesktop -r "run('runNAB(50,52,true,true)')" &
+nice -n 10 matlab -nodisplay -nosplash -nodesktop -r "run('runNAB(53,55,true,true)')" &
+nice -n 10 matlab -nodisplay -nosplash -nodesktop -r "run('runNAB(56,58,true,true)')" &
 
 

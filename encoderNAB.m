@@ -32,6 +32,15 @@ function data = encoderNAB (filename, width)
 % but WITHOUT ANY WARRANTY; without even the implied warranty of
 % MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 %
+
+function_name = "encoding_" + filename(strfind(filename,'/')+1:strfind(filename,'_')-1);
+function_handle = str2func(function_name);
+@(a, b)function_handle(a, b);
+
+data = function_handle(filename, width);
+
+
+function data = encoding_hourly(filename, width)
 fieldNames = {'data_value', 'month', 'day_of_week','time_of_day', 'weeeknd'};
 %data.fields = [1, 4, 5];
 %data.fields = [1];
@@ -82,10 +91,128 @@ for  i=1:length(data.fields)
     else
         data.value{j} = ones(size(rawData(:, j)));
     end
-
+    
     data.code{j} = encoderScalar (data.nBits(j), data.buckets(j), data.width(j), data.shift (j));
-    %fprintf(1, '%d ', data.nBits(j));
 end
+
+
+function data = encoding_value1 (filename, width)
+fieldNames = {'data_value', 'month', 'day_of_week','time_of_day', 'weeeknd'};
+%data.fields = [1, 4, 5];
+%data.fields = [1];
+data.fields = 1; %[1, 4];
+
+data.buckets = 120; %[120, 12, 7, 24, 2];
+data.width = [width, width, width, width, width];
+
+data.circularP = [false]; %[false, true, true, true, true];
+data.shift = [1 1 1 1 width];
+
+%% Read data
+readData = importdata (filename);
+
+%data.N = 100;
+data.N = length(readData)-1;
+
+%dateTime = readData.textdata (2:data.N+1, 1);
+
+%rawData = datevec(dateTime); %[y, month, d, timeOfDay, m, s]e
+%rawData(:,3) = weekday(dateTime);
+%rawData(:,5) = ((rawData(:,3) == 1) + (rawData(:,3) == 7)) + 1.0; %weekend 
+% energy, month, day of the week, time of day, weekend, seconds (not used)
+%rawData (:, 4) = rawData (:, 4); 
+rawData (:, 1) = readData (2:length(readData),1);
+
+%% Need to check data in numenta for comparison
+%data.labels = readData.data(:,4);
+%data.numentaAnomalyScore = readData.data(:,2);
+%data.numentaRawAnomalyScore = readData.data(:,3);
+    
+%% Decide on bits of representation 
+
+data.nBits = data.shift.*data.buckets;
+data.nBits (5) = 2* data.width(5); % month is a two level category data
+
+data.nBits(1) = data.shift(1)*data.buckets(1) + data.width(1) - 1;
+
+%% assign selected data as specified in the variable data.fields to the output
+
+%fprintf(1, '\n Bits of rep:');
+%for  i=1:length(data.fields)
+%1 = data.fields(i);
+data.name{1} = fieldNames(1);
+
+%quantize data
+dataRange = (max(rawData(:, 1)) - min (rawData(:, 1)));
+if (dataRange)
+    data.value{1} = floor((data.buckets(1) - 1)* (rawData(:, 1) - min (rawData(:, 1)))./...
+    dataRange +1);
+else
+    data.value{1} = ones(size(rawData(:, 1)));
+end
+
+data.code{1} = encoderScalar (data.nBits(1), data.buckets(1), data.width(1), data.shift (1));
+%fprintf(1, '%d ', data.nBits(1));
+%end
+
+
+function data = encoding_monthly(filename, width)
+fieldNames = {'data_value', 'month', 'day_of_week','time_of_day', 'weeeknd'};
+%data.fields = [1, 4, 5];
+%data.fields = [1];
+data.fields = [1, 2];
+
+data.buckets = [120, 12, 7, 24, 2];
+data.width = [width, width, width, width, width];
+
+data.circularP = [false, true, true, true, true];
+data.shift = [1 1 1 1 width];
+
+%% Read data
+readData = importdata (filename);
+data.N = size(readData.data, 1);
+dateTime = readData.textdata (2:data.N+1, 1);
+
+rawData = datevec(dateTime); %[y, month, d, timeOfDay, m, s]e
+rawData(:,3) = weekday(dateTime);
+rawData(:,5) = ((rawData(:,3) == 1) + (rawData(:,3) == 7)) + 1.0; %weekend 
+% energy, month, day of the week, time of day, weekend, seconds (not used)
+rawData (:, 4) = rawData (:, 4); 
+rawData (:, 1) = readData.data (:,1);
+%data.labels = readData.data(:,4);
+%data.numentaAnomalyScore = readData.data(:,2);
+%data.numentaRawAnomalyScore = readData.data(:,3);
+data.N = length(readData.data);
+
+    
+%% Decide on bits of representation 
+
+data.nBits = data.shift.*data.buckets;
+data.nBits (5) = 2* data.width(5); % month is a two level category data
+
+data.nBits(2) = data.buckets(2) + data.width(2) - 1;
+
+data.nBits(1) = data.shift(1)*data.buckets(1) + data.width(1) - 1;
+
+%% assign selected data as specified in the variable data.fields to the output
+
+%fprintf(1, '\n Bits of rep:');
+for  i=1:length(data.fields)
+    j = data.fields(i);
+    data.name{j} = fieldNames(j);
+    
+    %quantize data
+    dataRange = (max(rawData(:, j)) - min (rawData(:, j)));
+    if (dataRange)
+        data.value{j} = floor((data.buckets(j) - 1)* (rawData(:, j) - min (rawData(:, j)))./...
+        dataRange +1);
+    else
+        data.value{j} = ones(size(rawData(:, j)));
+    end
+    
+    data.code{j} = encoderScalar (data.nBits(j), data.buckets(j), data.width(j), data.shift (j));
+end
+
 
 
 function [SDR] = encoderScalar (n, buckets, width, shift)
